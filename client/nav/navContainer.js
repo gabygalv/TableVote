@@ -1,50 +1,61 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-const NavContainer = ({ navigation }) => {
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import Vote from './screens/Vote.js';
+import Party from './screens/Party.js';
+import Profile from './screens/Profile.js';
+
+const voteTab = 'Vote';
+const partyTab = 'Party';
+const profileTab = 'Profile';
+
+const Tab = createBottomTabNavigator();
+
+const NavContainer = () => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Home')}
-      >
-        <Text style={styles.text}>Button 1</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Party')}
-      >
-        <Text style={styles.text}>Button 2</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Profile')}
-      >
-        <Text style={styles.text}>Button 3</Text>
-      </TouchableOpacity>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName={voteTab}
+          screenOptions={ ({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              let rn = route.name;
+          
+              if (rn === voteTab) {
+                iconName = focused ? 'thumbs-up' : 'thumbs-up-outline';
+          
+              } else if (rn === partyTab) {
+                iconName = focused ? 'restaurant' : 'restaurant-outline';
+          
+              } else if (rn === profileTab) {
+                iconName = focused ? 'person' : 'person-outline';
+              }
+          
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: '#ff9f1c',
+            tabBarInactiveTintColor: 'grey',
+            tabBarLabelStyle: {
+              fontSize: 15,
+            },
+            tabBarStyle: {
+              display: 'flex',
+            },
+          })}
+        
+        >
+
+        <Tab.Screen name={voteTab} component={Vote} />
+        <Tab.Screen name={partyTab} component={Party} />
+        <Tab.Screen name={profileTab} component={Profile} />
+
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 60,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  button: {
-    paddingVertical: 10,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
 
 export default NavContainer;

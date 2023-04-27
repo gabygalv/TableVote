@@ -8,7 +8,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-_password_hash', '-created_at', '-updated_at', '-parties', '-partyuser')
+    serialize_rules = ('-_password_hash', '-created_at', '-updated_at', '-parties', '-partyuser', '-favorite_restaurants')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -42,7 +42,7 @@ class User(db.Model, SerializerMixin):
 class Party(db.Model, SerializerMixin):
     __tablename__ = 'parties'
 
-    serialize_rules = ('-',)
+    serialize_rules = ('-created_at', '-updated_at', '-party_users')
 
     id = db.Column(db.Integer, primary_key=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -50,14 +50,16 @@ class Party(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
     party_users = db.relationship('PartyUser', backref='party')
+    selected_restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+    selected_restaurant = db.relationship('Restaurant', backref='parties')
 
-    def ___repr__(self):
+    def __repr__(self):
         return f'<Party {self.id} * CreatorId {self.creator_id} * CreatedAt {self.created_at} >'
 
 class PartyUser(db.Model, SerializerMixin):
     __tablename__ = 'party_users'
 
-    serialize_rules = ('-',)
+    serialize_rules = ('-updated_at', '-party_vote', '-user-id')
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -65,17 +67,21 @@ class PartyUser(db.Model, SerializerMixin):
     voted = db.Column(db.Boolean)
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    party_vote = db.relationship('PartyVote', backref='partyuser')
+    selected_restaurant = association_proxy('party', 'selected_restaurant')
+
+
     def ___repr__(self):
         return f'<PartyUser {self.id} * UserId {self.user_id} * UpdatedAt {self.updated_at} >'
     
 class PartyVote(db.Model, SerializerMixin):
     __tablename__ = 'party_votes'
 
-    serialize_rules = ('-',)
+    serialize_rules = ('-updated_at', '-partyuser_id', '-restaurant_id')
 
     id = db.Column(db.Integer, primary_key=True)
     partyuser_id = db.Column(db.Integer, db.ForeignKey('party_users.id'))
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('parties.id'))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
     voted = db.Column(db.Boolean)
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
@@ -88,9 +94,11 @@ class Restaurant(db.Model, SerializerMixin):
     serialize_rules = ('-',)
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Varchar(255))
-    address = db.Column(db.Varchar(255))
+    name = db.Column(db.String)
+    address = db.Column(db.String)
     link = db.Column(db.String)
+
+    party_votes = db.relationship('PartyVote', backref='restaurant')
 
     def ___repr__(self):
         return f'<Restaurant {self.id} * Name {self.name} * Link {self.link} >'
@@ -102,7 +110,7 @@ class FavoriteRestaurant(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('parties.id'))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
     last_visit = db.Column(db.DateTime)
     def ___repr__(self):
         return f'<Restaurant {self.id} * Name {self.name} * Link {self.link} >'

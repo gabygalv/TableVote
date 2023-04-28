@@ -13,8 +13,7 @@ export default function App() {
 
   return (
     <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-    <AuthScreen/>
-    {/* <NavContainer/> */}
+    {isLoggedIn? <NavContainer isLoggedIn={isLoggedIn}/> : <AuthScreen/>}
    
 
 {/* //   <LoginSignupPage />

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
-import UserContext from '../UserContext.js';
+import UserContext from '../UserContext';
 import { useNavigation } from '@react-navigation/native';
 
 

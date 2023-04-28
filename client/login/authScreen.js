@@ -26,7 +26,8 @@ export default function AuthScreen () {
         })
         .then((res) => {
             if (res.ok) {
-              res.json().then((user) => {
+              res.json()
+              .then((user) => {
                 setIsLoggedIn(user);
                 // navigation.navigate('Vote');
               });
@@ -39,25 +40,41 @@ export default function AuthScreen () {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={TVLogo} style={{ height: '25%', width: '80%', resizeMode: 'contain' }} />
+          <Image source={TVLogo} style={{ height: '20%', width: '85%', resizeMode: 'contain' }} />
           <TextInput
-            style={{ height: 40, width: '80%', borderColor: 'gray', borderWidth: 1, marginTop: 0 }}
+            style={{ height: 40, 
+                width: '80%', 
+                borderColor: 'gray', 
+                borderWidth: 1, 
+                marginTop: 0,
+                borderRadius: '5px' }}
             placeholder="Email"
             autoCapitalize="none"
             onChangeText={(text) => setLoginEmail(text)}
             value={login_email}
           />
           <TextInput
-            style={{ height: 40, width: '80%', borderColor: 'gray', borderWidth: 1, marginTop: 10 }}
+            style={{ height: 40, 
+                width: '80%', 
+                borderColor: 'gray', 
+                borderWidth: 1, 
+                marginTop: 10,
+                borderRadius: '5px'  }}
             placeholder="Password"
             secureTextEntry={true}
             onChangeText={(text) => setLoginPassword(text)}
             value={login_password}
           />
-          <TouchableOpacity onPress={handleLogin} style={{ backgroundColor: '#cbf3f0', padding: 10, marginTop: 20 }}>
-            <Text style={{ color: 'grey' }}>Login</Text>
+          <TouchableOpacity onPress={handleLogin} style={{ 
+            backgroundColor: '#FF9F1C', 
+            padding: 10, 
+            marginTop: 20,
+            borderRadius: '5px'  }}>
+            <Text style={{ color: 'white' }}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress= {console.log('hello')} style={{ marginTop: 20 }}>
+          <TouchableOpacity 
+        //   onPress= {console.log('hello')} 
+          style={{ marginTop: 20 }}>
             <Text>Don't have an account? Sign up here.</Text>
           </TouchableOpacity>
         </View>

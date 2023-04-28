@@ -2,6 +2,8 @@ from flask import jsonify, make_response, request, session
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 
+import requests
+
 from config import app, api, db
 from models import User, Party, PartyUser, PartyVote, Restaurant, FavoriteRestaurant
 
@@ -88,6 +90,34 @@ class Restaurants(Resource):
 class FavoriteRestaurants(Resource):
     pass
 
+class YelpSearch(Resource):
+    def get(self, ):
+        location = request.args.get('location')
+        term = request.args.get('term')
+        radius = request.args.get('radius')
+        price = request.args.get('price')
+        sort = 'best_match'
+
+        headers = {
+            'Authorization': 'Bearer MKSIL3sBZnHXNqsd_5wZLXe5ro_JSscoLxsV-lZMMJCcpAm1ZlLlqT3M0n74OXURXKTSAYJzVty3hIjipXF8ofOfPsjiT1-TXLKfqcRcB2XKNX22CpdmRQmgVwtHZHYx',
+            'Content-Type': 'application/json',
+        }
+
+        params = {
+            'location': location,
+            'term': term,
+            'radius': radius,
+            'price': price,
+            'sort_by': sort,
+            'limit': 2
+        }
+        response = requests.get('https://api.yelp.com/v3/businesses/search?', headers=headers, params=params)
+        print(response)
+
+
+
+        return response.json()
+
 api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
 api.add_resource(Parties, '/parties')
@@ -95,6 +125,7 @@ api.add_resource(PartyUsers, '/partyusers')
 api.add_resource(PartyVotes, '/partyvotes')
 api.add_resource(Restaurants, '/restaurants')
 api.add_resource(FavoriteRestaurants, '/favoriterestaurants')
+api.add_resource(YelpSearch, '/yelpsearch')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')

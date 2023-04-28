@@ -39,9 +39,9 @@ class Login(Resource):
     
     def post(self):
         data = request.get_json()
-
-        check_user = User.query.filter(User.username == data['username']).first()
-        
+        print(data)
+        check_user = User.query.filter(User.email == data['email']).first()
+        print(check_user)
         if check_user and check_user.authenticate(data['password']):
             session['user_id'] = check_user.id
 

@@ -1,16 +1,23 @@
-import React from 'react';
+import {React, useState} from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 import NavContainer from './nav/navContainer.js';
+import AuthScreen from './login/authScreen.js';
+import UserContext from './UserContext.js';
+
 
 export default function App() {
-  return (
-    <>
-    <NavContainer/>
-    </>
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
 
-//   <App>
-//   <LoginSignupPage />
+  console.log(isLoggedIn)
+
+  return (
+    <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthScreen/>
+    {/* <NavContainer/> */}
+   
+
+{/* //   <LoginSignupPage />
 //   <NavBar>
 //     <VotePage />
 //     <PartyPage>
@@ -22,9 +29,9 @@ export default function App() {
 //       </ActiveParty>
 //     </PartyPage>
 //     <ProfilePage />
-//   </NavBar>
-// </App> */}
-  
+   </NavBar> */}
+
+  </UserContext.Provider>
   );
 }
 

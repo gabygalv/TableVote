@@ -1,18 +1,45 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
 
 const RestaurantCard = ({ restaurant }) => {
   
-  console.log('incard:' +restaurant.name)
 
   return (
-    <TouchableOpacity style={styles.container} 
-    onPress={() => window.open(url, '_blank')}
-    >
+    <TouchableOpacity 
+      style={styles.container}
+      onPress={() => window.open(restaurant.url, '_blank')}>
       <Image style={styles.image} source={{ uri: restaurant.image_url }} />
-      <View style={styles.details}>
+      <View >
         <Text style={styles.name}>{restaurant.name}</Text>
-        {/* <Text style={styles.address}>{restaurant.location.display_address.join(', ')}</Text> */}
+        <Text style={styles.category}>
+          {restaurant.categories && restaurant.categories.length > 0 ? restaurant.categories[0].title : ''}
+        </Text>
+        <View style={styles.rating}>
+          {[...Array(Math.floor(restaurant.rating))].map((_, i) => (
+            <Ionicons key={i} name='star' color={'#2EC4B6'}/>
+            ))}
+          {restaurant.rating % 1 !== 0 && (
+            <Ionicons name='star-half' color={'#2EC4B6'}/>
+            )}
+          <Text style={styles.ratingText}>{restaurant.rating}</Text>
+          <Text style={styles.reviewCount}>({restaurant.review_count})</Text>
+        </View>
+        <Text style={styles.address}>{restaurant.location.address1}</Text>
+        <Text style={styles.address}>
+          {restaurant.location.city}, {restaurant.location.state} {restaurant.location.zip_code}
+        </Text>
+      </View>
+      <View style={styles.checkboxContainer}>
+        <BouncyCheckbox
+          size={25}
+          fillColor="#2EC4B6"
+          unfillColor="#FFFFFF"
+          iconStyle={{ borderColor: "#2EC4B6" }}
+          innerIconStyle={{ borderWidth: 2 }}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -25,7 +52,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     flexDirection: 'row',
     marginVertical: 8,
-    marginHorizontal: 16,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -39,19 +65,47 @@ const styles = StyleSheet.create({
     width: 100,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
-  },
-  details: {
-    flex: 1,
-    padding: 8,
+    marginRight: 8
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
+  category: {
+    color: '#666',
+    marginBottom: 4,
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  star: {
+    height: 16,
+    width: 16,
+    marginRight: 4,
+    color: '#2EC4B6'
+  },
+  ratingText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginRight: 4,
+  },
+  reviewCount: {
+    fontSize: 14,
+    color: '#666',
+  },
   address: {
     fontSize: 14,
     color: '#666',
+    marginBottom: 2,
+  }, 
+  checkboxContainer: {
+    justifyContent: "center",
+    alignItems: "flex-end",
+    flex: 1,
+    paddingRight: 15,
   },
 });
 

@@ -73,11 +73,61 @@ class Parties(Resource):
     def get(self):
         parties = [item.to_dict() for item in Party.query.all()]
         return make_response(parties, 200)
+    
+    def post(self):
+        if session.get('user_id'):
+            data = request.get_json()
+
+            new_party = Party(
+                creator_id = data['creator_id'],
+                location = data['location'],
+                term = data['term'],
+                radius = data['radius'],
+                price = data['price']
+                )
+            db.session.add(new_party)
+            db.session.commit()
+
+            return make_response(new_party.to_dict(), 201)
+        return {'error': 'Unauthorized'}, 401
 
 class PartyUsers(Resource):
     def get(self):
         party_users = [item.to_dict() for item in PartyUser.query.all()]
         return make_response(party_users, 200)
+    def post(self):
+        if session.get('user_id'):
+            usernames = request.get_json()
+            users = User.query.filter(User.username.in_(usernames)).all()
+            for user in users:
+                user_id = user.id
+                partuser = PartyUser(
+                party_id=usernames['party_id'],
+                user_id=user_id
+                )
+                db.session.add(partuser)
+            db.session.commit()
+            return make_response({'message': 'PartyUsers added successfully'}, 201)
+        return make_response({'message': 'Unauthorized'}, 401)
+    
+    def post(self):
+        if session.get('user_id'):
+            data = request.get_json()
+        
+            party_id = data.get('party_id')
+            usernames = data.get('usernames')
+            
+            users = User.query.filter(User.username.in_(usernames)).all()
+            for user in users:
+                partuser = PartyUser(
+                    party_id=party_id,
+                    user_id=user.id
+                )
+                db.session.add(partuser)
+            db.session.commit()
+            return make_response({'message': 'PartyUsers added'}, 201)
+        return make_response({'message': 'Unauthorized'}, 401)
+
 
 class PartyVotes(Resource):
     def get(self):
@@ -99,7 +149,7 @@ class YelpSearch(Resource):
         sort = 'best_match'
 
         headers = {
-            'Authorization': 'Bearer MKSIL3sBZnHXNqsd_5wZLXe5ro_JSscoLxsV-lZMMJCcpAm1ZlLlqT3M0n74OXURXKTSAYJzVty3hIjipXF8ofOfPsjiT1-TXLKfqcRcB2XKNX22CpdmRQmgVwtHZHYx',
+            'Authorization': 'Bearer <api_key>',
             'Content-Type': 'application/json',
         }
 
@@ -109,7 +159,7 @@ class YelpSearch(Resource):
             'radius': radius,
             'price': price,
             'sort_by': sort,
-            'limit': 2
+            'limit': 10
         }
         response = requests.get('https://api.yelp.com/v3/businesses/search?', headers=headers, params=params)
         print(response)

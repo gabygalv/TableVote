@@ -48,6 +48,10 @@ class Party(db.Model, SerializerMixin):
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    location = db.Column(db.String)
+    radius = db.Column(db.Float)
+    term = db.Column(db.String)
+    price = db.Column(db.Integer)
 
     party_users = db.relationship('PartyUser', backref='party')
     selected_restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))

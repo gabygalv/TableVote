@@ -16,8 +16,8 @@ with app.app_context():
 
     # create users
     print('..')
-    user1 = User(username='johnsmith', email='johnsmith@example.com', password_hash='password')
-    user2 = User(username='janesmith', email='janesmith@example.com', password_hash='password')
+    user1 = User(username='gaby', email='gaby@example.com', password_hash='password')
+    user2 = User(username='gaby1', email='gaby1@example.com', password_hash='password')
     print('adding')
     db.session.add_all([user1, user2])
     db.session.commit()

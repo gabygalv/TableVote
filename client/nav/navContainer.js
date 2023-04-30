@@ -3,6 +3,8 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Button } from 'react-native';
+
 
 import Vote from './screens/Vote.js';
 import Party from './screens/Party.js';
@@ -48,7 +50,19 @@ const NavContainer = () => {
         
         >
 
-        <Tab.Screen name={voteTab} component={Vote} />
+        <Tab.Screen
+          name={voteTab}
+          component={Vote}
+          options={{
+            headerRight: () => (
+              <Button
+                onPress={() => alert('Your vote has been submitted')}
+                title="Submit"
+                color="#ff9f1c"
+              />
+            ),
+          }}
+        />
         <Tab.Screen name={partyTab} component={Party} />
         <Tab.Screen name={profileTab} component={Profile} />
 

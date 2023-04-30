@@ -4,46 +4,104 @@ import UserContext from '../../UserContext.js';
 import {Picker} from '@react-native-picker/picker';
 
 
+const metersPerMile = 1609;
 
 export default function Party() {
-  const {isLoggedIn, yelpData, setYelpData} = useContext(UserContext);
+  const { isLoggedIn, yelpData, setYelpData } = useContext(UserContext);
   const [searchparty, setSearchparty] = useState({
     location: '',
     radius: '',
     term: '',
     price: ''
   });
+  const [usernames, setUsernames] = useState([])
+
+  
+  console.log(usernames)
+  
+  const handleUsernamesChange = (text) => {
+    const newNames = text.trim().split(",");
+    setUsernames([...usernames, ...newNames]);
+  }
   
   const handleInputChange = (fieldName, value) => {
-    setSearchparty({...searchparty, [fieldName]: value});
+    if (fieldName === 'radius') {
+      const radiusInMiles = parseInt(value);
+      if (Number.isInteger(radiusInMiles)) {
+        const radiusInMeters = radiusInMiles * metersPerMile;
+        setSearchparty({ ...searchparty, radius: radiusInMiles, radiusInMeters });
+      }
+    } else {
+      setSearchparty({ ...searchparty, [fieldName]: value });
+    }
   };
 
   const handleSubmit = () => {
     const urlParams = new URLSearchParams({
       location: searchparty.location,
       term: searchparty.term,
-      radius: searchparty.radius,
+      radius: searchparty.radiusInMeters,
       price: searchparty.price
     });
     const requestOptions = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      }, 
+      },
+    };
+    const postOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        creator_id: isLoggedIn.id,
+        location: searchparty.location,
+        term: searchparty.term,
+        radius: searchparty.radiusInMeters,
+        price: searchparty.price
+      })
     };
   
-      fetch(`http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`, requestOptions)
-        .then((r) => {
-          if (r.ok) {
-            r.json()
-            .then((data) => {
-              setYelpData(data);
+    fetch(`http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`, requestOptions)
+      .then((r) => {
+        if (r.ok) {
+          r.json().then((data) => {
+            setYelpData(data);
+          });
+        }
+      });
+  
+    fetch('http://127.0.0.1:5555/parties', postOptions)
+      .then((res) => {
+        if (res.ok) {
+          alert('Your party has been created!, head to the vote tab to start voting!');
+        } else {
+          console.error('Error saving party data to database:', res.statusText);
+          alert('Error saving party data to database:', res.statusText);
+          setSearchparty(null);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data) {
+          const id = data.id;
+  
+          fetch('http://127.0.0.1:5555/partyusers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              party_id: id,
+              usernames
             })
-          }
-        });
-    };
-
-    console.log(searchparty)
+          });
+        }
+      })
+      .catch((err) => console.error('Error saving party data to database:', err));
+  };
+  console.log(searchparty)
 
   return(
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
@@ -63,7 +121,7 @@ export default function Party() {
         value={searchparty.location}
       />
 
-      <TextInput
+    <View
         style={{
           height: 40,
           width: '80%',
@@ -71,12 +129,24 @@ export default function Party() {
           borderWidth: 1,
           marginTop: 20,
           borderRadius: 5,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
-        placeholder="Radius"
-        autoCapitalize="none"
-        onChangeText={(text) => handleInputChange('radius', text)}
-        value={searchparty.radius}
-      />
+      >
+        <Text>Radius:</Text>
+        <Picker
+          style={{ width: '50%' }}
+          selectedValue={searchparty.radius ? (searchparty.radius / 1609.34).toString() : null}
+          onValueChange={(value) => handleInputChange('radius', value)}
+          mode="dropdown"
+        >
+          <Picker.Item label="5 mile" value="5" />
+          <Picker.Item label="10 miles" value="10" />
+          <Picker.Item label="20 miles" value="20" />
+          <Picker.Item label="30 miles" value="30" />
+        </Picker>
+      </View>
 
       <TextInput
         style={{
@@ -91,6 +161,20 @@ export default function Party() {
         autoCapitalize="none"
         onChangeText={(text) => handleInputChange('term', text)}
         value={searchparty.term}
+      />
+      <TextInput
+        style={{
+          height: 40,
+          width: '80%',
+          borderColor: 'gray',
+          borderWidth: 1,
+          marginTop: 20,
+          borderRadius: 5,
+        }}
+        placeholder="Usernames"
+        autoCapitalize="none"
+        onChangeText={(text) => handleUsernamesChange(text)}
+        value={usernames.join(",")}
       />
 
     <Picker

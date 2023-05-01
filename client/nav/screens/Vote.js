@@ -7,7 +7,7 @@ import RestaurantList from '../../components/restaurantList.js';
 export default function Vote() {
   const {isLoggedIn, yelpData} = useContext(UserContext);
 
-
+console.log('invote' +yelpData)
   return (
     <View >
       <Text>Vote! {isLoggedIn.username}</Text>

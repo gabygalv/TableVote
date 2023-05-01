@@ -99,8 +99,13 @@ class Restaurant(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    category = db.Column(db.String)
     address = db.Column(db.String)
     link = db.Column(db.String)
+    image_url = db.Column(db.String)
+    rating = db.Column(db.Float)
+    review_count = db.Column(db.Integer)
+    yelp_id = db.Column(db.String)
 
     party_votes = db.relationship('PartyVote', backref='restaurant')
 

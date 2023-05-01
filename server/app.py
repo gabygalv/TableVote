@@ -68,6 +68,13 @@ class Users(Resource):
     def get(self):
         users = [item.to_dict() for item in User.query.all()]
         return make_response(users, 200)
+    
+class PartiesByID(Resource):
+     def get(self, id):
+        party = Party.query.filter_by(id=id).first()
+        if party:
+            return make_response(party.to_dict(), 200)
+        return {'error': 'Not Found'}, 404
 
 class Parties(Resource):
     def get(self):
@@ -149,7 +156,7 @@ class YelpSearch(Resource):
         sort = 'best_match'
 
         headers = {
-            'Authorization': 'Bearer <api_key>',
+            'Authorization': 'Bearer ',
             'Content-Type': 'application/json',
         }
 
@@ -171,6 +178,7 @@ class YelpSearch(Resource):
 api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
 api.add_resource(Parties, '/parties')
+api.add_resource(PartiesByID, '/parties/<int:id>')
 api.add_resource(PartyUsers, '/partyusers')
 api.add_resource(PartyVotes, '/partyvotes')
 api.add_resource(Restaurants, '/restaurants')

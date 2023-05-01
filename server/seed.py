@@ -36,8 +36,8 @@ with app.app_context():
 
     # create parties
     print('..')
-    party1 = Party(creator_id=user1.id, created_at=datetime.now())
-    party2 = Party(creator_id=user2.id, created_at=datetime.now())
+    party1 = Party(creator_id=user1.id, created_at=datetime.now(), location='tucson', radius='8045.0', term='Pizza')
+    party2 = Party(creator_id=user2.id, created_at=datetime.now(), location='phoenix', radius='8045.0', term='Pizza')
     print('adding')
     db.session.add_all([party1, party2])
     db.session.commit()

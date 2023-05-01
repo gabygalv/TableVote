@@ -1,11 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 
 const RestaurantCard = ({ restaurant }) => {
-  
+  const [isChecked, setIsChecked] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    fetch('http://127.0.0.1:5555/partyvote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: 'id',
+        restaurantId: restaurant.id,
+        voted: true
+      })
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+
+    fetch('http://127.0.0.1.5555/restaurants', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(restaurant)
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+
+    setIsSubmitted(true);
+  }
 
   return (
     <TouchableOpacity 
@@ -31,6 +62,7 @@ const RestaurantCard = ({ restaurant }) => {
         <Text style={styles.address}>
           {restaurant.location.city}, {restaurant.location.state} {restaurant.location.zip_code}
         </Text>
+        <Text style={styles.address}>{restaurant.display_phone}</Text>
       </View>
       <View style={styles.checkboxContainer}>
         <BouncyCheckbox
@@ -39,7 +71,16 @@ const RestaurantCard = ({ restaurant }) => {
           unfillColor="#FFFFFF"
           iconStyle={{ borderColor: "#2EC4B6" }}
           innerIconStyle={{ borderWidth: 2 }}
+          onPress={() => setIsChecked(!isChecked)}
         />
+        {isChecked && !isSubmitted && (
+          <TouchableOpacity onPress={handleSubmit}>
+            <Text style={styles.submit}>Submit</Text>
+          </TouchableOpacity>
+        )}
+        {isChecked && isSubmitted && (
+          <Text style={styles.submitted}>Submitted</Text>
+        )}
       </View>
     </TouchableOpacity>
   );

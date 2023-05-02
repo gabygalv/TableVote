@@ -1,21 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import UserContext from '../UserContext';
 
 
 const RestaurantCard = ({ restaurant }) => {
+  const { isLoggedIn } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = () => {
-    fetch('http://127.0.0.1:5555/partyvote', {
+    fetch('http://127.0.0.1:5555/partyvotes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        userId: 'id',
+        userId: isLoggedIn.id,
         restaurantId: restaurant.id,
         voted: true
       })
@@ -29,7 +31,7 @@ const RestaurantCard = ({ restaurant }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(restaurant)
+      body: JSON.stringify({restaurant})
     })
     .then(response => response.json())
     .then(data => console.log(data))
@@ -102,8 +104,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   image: {
-    height: 100,
-    width: 100,
+    height: 125,
+    width: 125,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
     marginRight: 8

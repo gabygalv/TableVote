@@ -42,11 +42,11 @@ class User(db.Model, SerializerMixin):
 class Party(db.Model, SerializerMixin):
     __tablename__ = 'parties'
 
-    serialize_rules = ('-created_at', '-updated_at', '-party_users')
+    serialize_rules = ('-party_users',)
 
     id = db.Column(db.Integer, primary_key=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.current_date())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     location = db.Column(db.String)
     radius = db.Column(db.Float)
@@ -63,7 +63,7 @@ class Party(db.Model, SerializerMixin):
 class PartyUser(db.Model, SerializerMixin):
     __tablename__ = 'party_users'
 
-    serialize_rules = ('-updated_at', '-party_vote', '-user-id')
+    serialize_rules = ('-updated_at', '-party_vote', '-user.id')
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

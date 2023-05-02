@@ -53,19 +53,18 @@ const NavContainer = () => {
         <Tab.Screen
           name={voteTab}
           component={Vote}
-          options={{
-            headerRight: () => (
-              <Button
-                onPress={() => alert('Your vote has been submitted')}
-                title="Submit"
-                color="#ff9f1c"
-              />
-            ),
-          }}
+          // options={{
+          //   headerRight: () => (
+          //     <Button
+          //       onPress={() => alert('Your vote has been submitted')}
+          //       title="Submit"
+          //       color="#ff9f1c"
+          //     />
+          //   ),
+          // }}
         />
         <Tab.Screen name={partyTab} component={Party} />
         <Tab.Screen name={profileTab} component={Profile} />
-
       </Tab.Navigator>
     </NavigationContainer>
   );

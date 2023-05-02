@@ -8,7 +8,7 @@ import TVLogo from '../assets/tvlogo.png'
 
 export default function AuthScreen () {
     // const navigation = useNavigation();
-    const {isLoggedIn, setIsLoggedIn, setYelpData} = useContext(UserContext);
+    const {isLoggedIn, setIsLoggedIn, setLoggedInParties, setRefresh} = useContext(UserContext);
     const [login_email, setLoginEmail] = useState('');
     const [login_password, setLoginPassword] = useState('');
     console.log(isLoggedIn)
@@ -28,30 +28,11 @@ export default function AuthScreen () {
           if (res.ok) {
             res.json().then((user) => {
               setIsLoggedIn(user);
-              // navigation.navigate('Vote');
-              fetch('http://127.0.0.1:5555/parties')
-                .then((res) => res.json())
-                .then((parties) => {
-                  console.log(parties);
-                  const activeParty = parties.find((party) => {
-                    return (
-                      party.user.id === user.id &&
-                      !party.selected_restaurant_id
-                    );
-                  });
-                  if (activeParty) {
-                    const urlParams = new URLSearchParams({
-                      location: activeParty.location,
-                      radius: activeParty.radius,
-                      term: activeParty.term,
-                      price: activeParty.price,
-                    });
-                    const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
-                    fetch(url).then((response) => {
-                      setYelpData(response);
-                    });
-                  }
-                });
+              fetch(`http://127.0.0.1:5555/users/${user.id}/parties`)
+          .then((res) => res.json())
+          .then((parties) => {
+            setLoggedInParties(parties);
+          });
             });
           }
         })

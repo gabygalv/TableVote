@@ -9,6 +9,8 @@ import UserContext from './UserContext.js';
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null); 
   const [yelpData, setYelpData] = useState(null); 
+  const [loggedInParties, setLoggedInParties] = useState(null); 
+  const [refresh, setRefresh] = useState(false); 
 
   console.log(isLoggedIn)
 
@@ -16,30 +18,30 @@ export default function App() {
     fetch("http://127.0.0.1:5555/check_session")
       .then((r) => {
         if (r.ok) {
-          r.json()
-          .then((currentUser) => setIsLoggedIn(currentUser)
-          )}
+          r.json().then((currentUser) => {
+            setIsLoggedIn(currentUser);
+            fetch(`http://127.0.0.1:5555/users/${currentUser.id}/parties`)
+              .then((res) => res.json())
+              .then((parties) => {
+                setLoggedInParties(parties);
+              });
+          });
+        }
       });
-  }, []);
+  }, [refresh]);
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn, yelpData, setYelpData }}>
+    <UserContext.Provider value={{ isLoggedIn, 
+    setIsLoggedIn, 
+    yelpData, 
+    setYelpData,
+    loggedInParties, 
+    setLoggedInParties,
+    refresh, 
+    setRefresh  }}>
     {isLoggedIn? <NavContainer isLoggedIn={isLoggedIn}/> : <AuthScreen/>}
   </UserContext.Provider>
   );
 }
 
-{/* //   <LoginSignupPage />
-//   <NavBar>
-//     <VotePage />
-//     <PartyPage>
-//       <CreatePartyForm />
-//       <ActiveParty>
-//         <RestaurantCards />
-//         <VoteForm />
-//         <CompletedParty />
-//       </ActiveParty>
-//     </PartyPage>
-//     <ProfilePage />
-   </NavBar> */}
 

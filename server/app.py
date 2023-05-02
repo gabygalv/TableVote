@@ -11,7 +11,6 @@ class Signup(Resource):
 
     def post(self):
         data = request.get_json()
-        print(data)
         try:
             new_user = User(
                 username = data['username'],
@@ -41,9 +40,7 @@ class Login(Resource):
     
     def post(self):
         data = request.get_json()
-        print(data)
         check_user = User.query.filter(User.email == data['email']).first()
-        print(check_user)
         if check_user and check_user.authenticate(data['password']):
             session['user_id'] = check_user.id
 
@@ -68,6 +65,17 @@ class Users(Resource):
     def get(self):
         users = [item.to_dict() for item in User.query.all()]
         return make_response(users, 200)
+    
+class UserParties(Resource):
+    def get(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        parties = Party.query.join(Party.party_users).filter(
+            (Party.creator_id == user.id) | (PartyUser.user_id == user.id)).all()
+        user_parties = [item.to_dict(rules=('party_users.user.username',)) for item in parties]
+        return make_response(user_parties, 200)
     
 class PartiesByID(Resource):
      def get(self, id):
@@ -140,9 +148,35 @@ class PartyVotes(Resource):
     def get(self):
         party_votes = [item.to_dict() for item in PartyVote.query.all()]
         return make_response(party_votes, 200)
+    def post(self):
+        if session.get('user_id'):
+            data = request.get_json()
+            newVote = PartyVote(
+                partyuser_id=data['userId'],
+                restaurant_id=data['restaurantId'],
+                voted=data['voted']
+            )
+            db.session.add(newVote)
+            db.session.commit()
+            return make_response(newVote.to_dict(), 201)
+        return make_response({'message': 'Unauthorized'}, 401)
 
 class Restaurants(Resource):
-    pass
+    def post():
+        data = request.get_json()
+        new_restaurant = Restaurant(
+            name=data['name'],
+            category=data['category'],
+            address=data['address'],
+            link=data['link'],
+            image_url=data['image_url'],
+            rating=data['rating'],
+            review_count=data['review_count'],
+            yelp_id=data['yelp_id']
+        )
+        db.session.add(new_restaurant)
+        db.session.commit()
+        return make_response(new_restaurant.to_dict(), 201)
 
 class FavoriteRestaurants(Resource):
     pass
@@ -169,7 +203,6 @@ class YelpSearch(Resource):
             'limit': 10
         }
         response = requests.get('https://api.yelp.com/v3/businesses/search?', headers=headers, params=params)
-        print(response)
 
 
 
@@ -177,6 +210,7 @@ class YelpSearch(Resource):
 
 api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
+api.add_resource(UserParties, '/users/<int:user_id>/parties')
 api.add_resource(Parties, '/parties')
 api.add_resource(PartiesByID, '/parties/<int:id>')
 api.add_resource(PartyUsers, '/partyusers')

@@ -7,7 +7,7 @@ import {Picker} from '@react-native-picker/picker';
 const metersPerMile = 1609;
 
 export default function PartyForm() {
-  const { isLoggedIn, yelpData, setYelpData } = useContext(UserContext);
+  const { isLoggedIn, setRefresh } = useContext(UserContext);
   const [searchparty, setSearchparty] = useState({
     location: '',
     radius: '',
@@ -38,18 +38,7 @@ export default function PartyForm() {
   };
 
   const handleSubmit = () => {
-    const urlParams = new URLSearchParams({
-      location: searchparty.location,
-      term: searchparty.term,
-      radius: searchparty.radiusInMeters,
-      price: searchparty.price
-    });
-    const requestOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    };
+    
     const postOptions = {
       method: 'POST',
       headers: {
@@ -64,19 +53,10 @@ export default function PartyForm() {
       })
     };
   
-    fetch(`http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`, requestOptions)
-      .then((r) => {
-        if (r.ok) {
-          r.json().then((data) => {
-            setYelpData(data);
-          });
-        }
-      });
-  
     fetch('http://127.0.0.1:5555/parties', postOptions)
       .then((res) => {
         if (res.ok) {
-          alert('Your party has been created!, head to the vote tab to start voting!');
+          alert('Your party has been created, head to the vote tab to start voting!');
         } else {
           console.error('Error saving party data to database:', res.statusText);
           alert('Error saving party data to database:', res.statusText);
@@ -98,6 +78,7 @@ export default function PartyForm() {
               usernames: userArray
             })
           });
+          setRefresh(true);
         }
       })
       .catch((err) => console.error('Error saving party data to database:', err));

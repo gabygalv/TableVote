@@ -9,10 +9,12 @@ import { Button } from 'react-native';
 import Vote from './screens/Vote.js';
 import Party from './screens/Party.js';
 import Profile from './screens/Profile.js';
+import RestaurantList from '../components/restaurantList.js';
 
 const voteTab = 'Vote';
 const partyTab = 'Party';
 const profileTab = 'Profile';
+const restaurantList = 'Restauratn List';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,21 +53,13 @@ const NavContainer = () => {
         >
 
         <Tab.Screen
-          name={voteTab}
-          component={Vote}
-          // options={{
-          //   headerRight: () => (
-          //     <Button
-          //       onPress={() => alert('Your vote has been submitted')}
-          //       title="Submit"
-          //       color="#ff9f1c"
-          //     />
-          //   ),
-          // }}
-        />
+          name={voteTab} component={Vote} />
         <Tab.Screen name={partyTab} component={Party} />
         <Tab.Screen name={profileTab} component={Profile} />
       </Tab.Navigator>
+        <Tab.Group screenOptions={{ presentation: 'modal' }}>
+          <Tab.Screen name="RestaurantList" component={RestaurantList} />
+      </Tab.Group>
     </NavigationContainer>
   );
 };

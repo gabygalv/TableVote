@@ -1,30 +1,36 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import UserContext from '../UserContext.js';
+import RestaurantList from './restaurantList';
+import { useNavigation } from '@react-navigation/native';
+
+
 
 export default function PartyCard({ party }) {
+  const {setYelpData, yelpData} = useContext(UserContext);
+  const [clicked, setClicked] = useState(false);
   const navigation = useNavigation();
-  const [restaurants, setRestaurants] = useState([]);
 
-  const handlePress = useCallback(() => {
+
+
+  const handlePress = () => {
     const urlParams = new URLSearchParams({
       location: party.location,
-      radius: party.radiusInMeters,
+      radius: party.radius,
       term: party.term,
       price: party.price,
     });
     const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
-
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setRestaurants(data.businesses);
-        navigation.navigate('RestaurantList', { restaurants: data.businesses });
+        setYelpData(data);
       })
-      .catch((error) => console.error(error));
-  }, [navigation, party]);
-
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
     return (
       <TouchableOpacity style={styles.container} 

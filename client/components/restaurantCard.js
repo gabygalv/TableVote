@@ -6,7 +6,7 @@ import UserContext from '../UserContext';
 
 
 const RestaurantCard = ({ restaurant }) => {
-  const { isLoggedIn } = useContext(UserContext);
+  const { isLoggedIn, setYelpData,setRefresh, refresh } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -38,6 +38,8 @@ const RestaurantCard = ({ restaurant }) => {
     .catch(error => console.log(error));
 
     setIsSubmitted(true);
+    setYelpData(null)
+    setRefresh(!refresh)
   }
 
   return (

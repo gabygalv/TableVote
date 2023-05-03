@@ -17,27 +17,20 @@ with app.app_context():
     # create users
     print('..')
     user1 = User(username='gaby', email='gaby@example.com', password_hash='password')
-    user2 = User(username='gaby1', email='gaby1@example.com', password_hash='password')
+    user2 = User(username='krista', email='krista@example.com', password_hash='password')
+    user3 = User(username='val', email='val@example.com', password_hash='password')
+    user4 = User(username='coco', email='coco@example.com', password_hash='password')
+    user5 = User(username='dolly', email='dolly@example.com', password_hash='password')
     print('adding')
-    db.session.add_all([user1, user2])
+    db.session.add_all([user1, user2, user3, user4, user5])
     db.session.commit()
     print('users committed!')
 
 
-    # create restaurants
-    print('..')
-    restaurant1 = Restaurant(name='McDonalds', address='123 Main St', link='https://www.mcdonalds.com/')
-    restaurant2 = Restaurant(name='Burger King', address='456 Elm St', link='https://www.bk.com/')
-    restaurant3 = Restaurant(name='Pizza Hut', address='789 Oak St', link='https://www.pizzahut.com/')
-    print('adding')
-    db.session.add_all([restaurant1, restaurant2, restaurant3])
-    db.session.commit()
-    print('restaurants committed!')
-
     # create parties
     print('..')
-    party1 = Party(creator_id=user1.id, created_at=datetime.now(), location='tucson', radius='8045.0', term='Pizza')
-    party2 = Party(creator_id=user2.id, created_at=datetime.now(), location='phoenix', radius='8045.0', term='Pizza')
+    party1 = Party(creator_id=user1.id, created_at=datetime.now(), location='tucson', radius='8045.0', term='Pizza', price='1')
+    party2 = Party(creator_id=user2.id, created_at=datetime.now(), location='phoenix', radius='8045.0', term='Pizza', price='2')
     print('adding')
     db.session.add_all([party1, party2])
     db.session.commit()
@@ -53,19 +46,5 @@ with app.app_context():
     db.session.commit()
     print('partyusers committed!')
 
-    # create party votes
-    print('..')
-    partyvote1 = PartyVote(partyuser_id=partyuser1.id, restaurant_id=restaurant1.id, voted=False, updated_at=datetime.now())
-    partyvote2 = PartyVote(partyuser_id=partyuser2.id, restaurant_id=restaurant2.id, voted=False, updated_at=datetime.now())
-    print('adding')
-    db.session.add_all([partyvote1, partyvote2])
-    db.session.commit()
-    print('partyusers committed!')
-    # create favorite restaurants
-    print('..')
-    favoriterestaurant1 = FavoriteRestaurant(user_id=user1.id, restaurant_id=restaurant1.id, last_visit=datetime.now())
-    favoriterestaurant2 = FavoriteRestaurant(user_id=user2.id, restaurant_id=restaurant2.id, last_visit=datetime.now())
-    print('adding')
-    db.session.add_all([favoriterestaurant1, favoriterestaurant2])
-    db.session.commit()
-    print('favrestaurants committed!')
+    
+    #

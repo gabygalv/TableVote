@@ -11,6 +11,7 @@ export default function App() {
   const [yelpData, setYelpData] = useState(null); 
   const [loggedInParties, setLoggedInParties] = useState(null); 
   const [refresh, setRefresh] = useState(false); 
+  const [currentParty, setCurrentParty] = useState(null); 
 
   console.log(isLoggedIn)
 
@@ -38,7 +39,9 @@ export default function App() {
     loggedInParties, 
     setLoggedInParties,
     refresh, 
-    setRefresh  }}>
+    setRefresh,
+    currentParty,
+    setCurrentParty }}>
     {isLoggedIn? <NavContainer isLoggedIn={isLoggedIn}/> : <AuthScreen/>}
   </UserContext.Provider>
   );

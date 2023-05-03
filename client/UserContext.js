@@ -4,7 +4,8 @@ const UserContext = React.createContext({
     isLoggedIn: null,
     yelpData: null,
     loggedInParties: null,
-    refresh: false
+    refresh: false,
+    currentParty: null
 });
 
 export default UserContext;

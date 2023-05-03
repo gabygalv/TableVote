@@ -6,42 +6,57 @@ import UserContext from '../UserContext';
 
 
 const RestaurantCard = ({ restaurant }) => {
-  const { isLoggedIn, setYelpData,setRefresh, refresh } = useContext(UserContext);
+  const { isLoggedIn, setYelpData,setRefresh, refresh, currentParty } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    fetch('http://127.0.0.1:5555/partyvotes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: isLoggedIn.id,
-        restaurantId: restaurant.id,
-        voted: true
-      })
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
 
-    fetch('http://127.0.0.1.5555/restaurants', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({restaurant})
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error));
+  const handleSubmit = async () => {
+    try {
+      const voteResponse = await fetch('http://127.0.0.1:5555/partyvotes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: isLoggedIn.id,
+          restaurantId: restaurant.id,
+          voted: true
+        })
+      });
+      const voteData = await voteResponse.json();
+      console.log(voteData);
 
-    setIsSubmitted(true);
-    setYelpData(null)
-    setRefresh(!refresh)
-  }
-
+      const updatePartyUserResponse = await fetch(`http://127.0.0.1:5555/partyusers/${currentParty.id}/${isLoggedIn.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          voted: true
+        })
+      });
+      const updatePartyUserData = await updatePartyUserResponse.json();
+      console.log(updatePartyUserData);
+        
+      const restaurantResponse = await fetch('http://127.0.0.1:5555/restaurants', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(restaurant)
+      });
+      const restaurantData = await restaurantResponse.json();
+      console.log(restaurantData);
+  
+      setIsSubmitted(true);
+      setYelpData(null);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+console.log(restaurant)
   return (
     <TouchableOpacity 
       style={styles.container}
@@ -113,7 +128,7 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   name: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     marginBottom: 4,
   },

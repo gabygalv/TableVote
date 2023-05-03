@@ -1,39 +1,15 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
+import React, { useContext, useState } from 'react';
+import UserContext from '../../UserContext.js';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import UserContext from '../UserContext.js';
-import RestaurantList from './restaurantList';
-import { useNavigation } from '@react-navigation/native';
 
 
+export default function SelectWinner() {
+  const {currentParty} = useContext(UserContext);
 
-export default function PartyCard({ party }) {
-  const {setYelpData, setCurrentParty} = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
-
-  console.log(party)
-  const handlePress = () => {  
-    setIsLoading(true);
-    setCurrentParty(party)
-    const urlParams = new URLSearchParams({
-      location: party.location,
-      radius: party.radius,
-      term: party.term,
-      price: party.price,
-    });
-    const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setYelpData(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+  const handleSelectRestaurant () => {
+    
+  }
 
   return (
     <>
@@ -75,7 +51,7 @@ export default function PartyCard({ party }) {
           <View style={styles.status}>
             {party.selected_restaurant_id === null ? (
             party.party_users.every(user => user.voted) ? (
-           <Button title="Select Restaurant" 
+           <Button style={styles.user} title="Crunch the Numbers!" 
           //  onPress={handleSelectRestaurant} 
            />
            ) : (

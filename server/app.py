@@ -1,5 +1,5 @@
 from flask import jsonify, make_response, request, session
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from sqlalchemy.exc import IntegrityError
 
 import requests
@@ -77,12 +77,18 @@ class UserParties(Resource):
         user_parties = [item.to_dict(rules=('party_users.user.username',)) for item in parties]
         return make_response(user_parties, 200)
     
-class PartiesByID(Resource):
+class PartiesRestaurant(Resource):
      def get(self, id):
-        party = Party.query.filter_by(id=id).first()
-        if party:
-            return make_response(party.to_dict(), 200)
-        return {'error': 'Not Found'}, 404
+        party_votes = PartyVote.query.join(PartyUser).filter(PartyUser.party_id == self.id, PartyUser.voted).all()
+        if not party_votes:
+            return None
+
+        vote_counts = {}
+        for party_vote in party_votes:
+            restaurant_id = party_vote.restaurant_id
+            vote_counts[restaurant_id] = vote_counts.get(restaurant_id, 0) + 1
+
+        return max(vote_counts, key=vote_counts.get)
 
 class Parties(Resource):
     def get(self):
@@ -108,23 +114,13 @@ class Parties(Resource):
 
 class PartyUsers(Resource):
     def get(self):
-        party_users = [item.to_dict() for item in PartyUser.query.all()]
-        return make_response(party_users, 200)
-    def post(self):
-        if session.get('user_id'):
-            usernames = request.get_json()
-            users = User.query.filter(User.username.in_(usernames)).all()
-            for user in users:
-                user_id = user.id
-                partuser = PartyUser(
-                party_id=usernames['party_id'],
-                user_id=user_id
-                )
-                db.session.add(partuser)
-            db.session.commit()
-            return make_response({'message': 'PartyUsers added successfully'}, 201)
-        return make_response({'message': 'Unauthorized'}, 401)
-    
+        party_id = request.args.get('partyId', type=int) 
+        party_users = PartyUser.query.filter_by(party_id=party_id).all() 
+        print(party_users)
+        # party_user_ids = [pu.id for pu in party_users]
+        # print(party_user_ids)
+        return jsonify([party_users])
+        
     def post(self):
         if session.get('user_id'):
             data = request.get_json()
@@ -142,6 +138,22 @@ class PartyUsers(Resource):
             db.session.commit()
             return make_response({'message': 'PartyUsers added'}, 201)
         return make_response({'message': 'Unauthorized'}, 401)
+    
+class PartyUsersByID(Resource):
+     def patch(self, party_id, user_id):
+        print('hello!')
+        data = request.get_json()
+        print(data)
+        to_update = PartyUser.query.filter_by(party_id=party_id, user_id=user_id).first()
+        print(to_update)
+        if to_update:
+            to_update.voted = data['voted']
+            db.session.commit()
+            return make_response({'message': 'PartyUser updated successfully'}, 200)
+        else:
+            return {'error': 'PartyUser not found'}, 401
+
+
 
 
 class PartyVotes(Resource):
@@ -162,17 +174,16 @@ class PartyVotes(Resource):
         return make_response({'message': 'Unauthorized'}, 401)
 
 class Restaurants(Resource):
-    def post():
+    def post(self):
         data = request.get_json()
         new_restaurant = Restaurant(
             name=data['name'],
-            category=data['category'],
-            address=data['address'],
-            link=data['link'],
+            address=data['location']['address1'],
+            link=data['url'],
             image_url=data['image_url'],
             rating=data['rating'],
             review_count=data['review_count'],
-            yelp_id=data['yelp_id']
+            yelp_id=data['id']
         )
         db.session.add(new_restaurant)
         db.session.commit()
@@ -190,7 +201,6 @@ class YelpSearch(Resource):
         sort = 'best_match'
 
         headers = {
-            'Authorization': 'Bearer ',
             'Content-Type': 'application/json',
         }
 
@@ -212,8 +222,9 @@ api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
 api.add_resource(UserParties, '/users/<int:user_id>/parties')
 api.add_resource(Parties, '/parties')
-api.add_resource(PartiesByID, '/parties/<int:id>')
+api.add_resource(PartiesRestaurant, '/parties/<int:id>')
 api.add_resource(PartyUsers, '/partyusers')
+api.add_resource(PartyUsersByID, '/partyusers/<int:party_id>/<int:user_id>')
 api.add_resource(PartyVotes, '/partyvotes')
 api.add_resource(Restaurants, '/restaurants')
 api.add_resource(FavoriteRestaurants, '/favoriterestaurants')

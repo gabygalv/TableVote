@@ -7,7 +7,7 @@ import {Picker} from '@react-native-picker/picker';
 const metersPerMile = 1609;
 
 export default function PartyForm() {
-  const { isLoggedIn, setRefresh } = useContext(UserContext);
+  const { isLoggedIn, setRefresh, refresh } = useContext(UserContext);
   const [searchparty, setSearchparty] = useState({
     location: '',
     radius: '',
@@ -78,7 +78,7 @@ export default function PartyForm() {
               usernames: userArray
             })
           });
-          setRefresh(true);
+          setRefresh(!refresh);
         }
       })
       .catch((err) => console.error('Error saving party data to database:', err));
@@ -125,8 +125,8 @@ export default function PartyForm() {
         >
           <Picker.Item label="5 mile" value="5" />
           <Picker.Item label="10 miles" value="10" />
-          <Picker.Item label="20 miles" value="20" />
-          <Picker.Item label="30 miles" value="30" />
+          <Picker.Item label="15 miles" value="15" />
+          <Picker.Item label="25 miles" value="24" />
         </Picker>
       </View>
 

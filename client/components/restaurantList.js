@@ -12,7 +12,7 @@ const RestaurantList = ({ yelpData }) => {
           restaurant={item}
         />
       )}
-      ListEmptyComponent={<Text>Start a party</Text>}
+      ListEmptyComponent={<Text>No Search Results Available</Text>}
     />
   );
 };

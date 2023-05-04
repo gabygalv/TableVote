@@ -25,7 +25,7 @@ export default function Profile() {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={styles.headerText}>Past Parties</Text>
+        <Text style={styles.orangeText}>Past Parties</Text>
         <PastParties loggedInParties={loggedInParties} />
       </View>
     </View>
@@ -50,6 +50,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
+  },
+  orangeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ff9f1c',
   },
   logoutButton: {
     backgroundColor: '#2EC4B6',

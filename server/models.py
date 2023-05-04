@@ -19,7 +19,6 @@ class User(db.Model, SerializerMixin):
 
     parties = db.relationship('Party', backref='user')
     partyuser = db.relationship('PartyUser', backref='user')
-    favorite_restaurants = db.relationship('FavoriteRestaurant', backref='user')
 
 
     @hybrid_property
@@ -111,14 +110,4 @@ class Restaurant(db.Model, SerializerMixin):
     def ___repr__(self):
         return f'<Restaurant {self.id} * Name {self.name} * Link {self.link} >'
 
-class FavoriteRestaurant(db.Model, SerializerMixin):
-    __tablename__ = 'favorite_restaurants'
 
-    serialize_rules = ('-',)
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
-    last_visit = db.Column(db.DateTime)
-    def ___repr__(self):
-        return f'<Restaurant {self.id} * Name {self.name} * Link {self.link} >'

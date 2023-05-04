@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, TextInput, Button} from 'react-native'
 import UserContext from '../UserContext.js';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default function PartyForm() {
+export default function PartyForm2() {
 
   const { isLoggedIn, setRefresh, refresh } = useContext(UserContext);
   const [usernames, setUsernames] = useState([isLoggedIn.username]);
@@ -51,6 +51,7 @@ export default function PartyForm() {
         } else {
           console.error('Error saving party data to database:', res.statusText);
           alert('Error saving party data to database:', res.statusText);
+          setSearchparty(null);
         }
         return res.json();
       })
@@ -69,25 +70,22 @@ export default function PartyForm() {
             })
           });
           setRefresh(!refresh);
-          setSearchparty('')
-          setPriceVal('')
-          setRadiusVal('')
         }
       })
       .catch((err) => console.error('Error saving party data to database:', err));
-    };
-    
-    
+  };
+  console.log(priceVal)
+  console.log(radiusVal)
+  console.log(usernames)
+  
   return(
-    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }} >
-    <View style={styles.header}>
-  <Text style={styles.headerText}>Invite your party, {isLoggedIn.username}</Text>
-  </View>
+    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
+  <Text>Invite your party! {isLoggedIn.username}</Text>
+  
   <View style={styles.inputContainer}>
-    <Text >Location:</Text>
     <TextInput
       style={styles.input}
-      placeholder="neighborhood, city, state, or zip"
+      placeholder="Location"
       autoCapitalize="none"
       onChangeText={(text) => handleInputChange('location', text)}
       value={searchparty.location}
@@ -96,10 +94,9 @@ export default function PartyForm() {
 
   
   <View style={styles.inputContainer}>
-    <Text >Search Term:</Text>
     <TextInput
       style={styles.input}
-      placeholder="tacos, hawaiian, bars, etc"
+      placeholder="Search Term"
       autoCapitalize="none"
       onChangeText={(text) => handleInputChange('term', text)}
       value={searchparty.term}
@@ -107,43 +104,21 @@ export default function PartyForm() {
       </View>
   
   <View style={styles.inputContainer}>
-  <Text >Usernames:</Text>
     <TextInput
       style={styles.input}
-      placeholder="enter usernames separated by a comma"
+      placeholder="Usernames"
       autoCapitalize="none"
       onChangeText={(text) => handleUsernamesChange(text)}
       value={usernames}
     />
   </View>
-  <View style={styles.inputContainer}>
-  <Text >Price Range:</Text>
-  <DropDownPicker
-        theme="LIGHT"
-        zIndex={3000}
-        zIndexInverse={1000}
-        open={openPrice}
-        setOpen={setOpenPrice}
-        value={priceVal}
-        setValue={setPriceVal}
-        items={[
-          { label: '$', value: '1' },
-          { label: '$$', value: '2' },
-          { label: '$$$', value: '3' },
-          { label: '$$$$', value: '4' },
-        ]}
-        textStyle={styles.pickerText}
-        arrowStyle={styles.arrow}
-      
-      />
-</View>
 
     <View style={styles.inputContainer}>
-      <Text > Search Radius:</Text>
+      <Text >Radius:</Text>
       <View >
       <DropDownPicker
-       zIndex={2000}
-       zIndexInverse={2000}
+        zIndex={2000}
+        zIndexInverse={2000}
         open={openRadius}
         setOpen={setOpenRadius}
         value={radiusVal}
@@ -162,20 +137,36 @@ export default function PartyForm() {
       </View>
     </View>
 
-    <TouchableOpacity onPress={handleSubmit} style={{ 
-    backgroundColor: '#2EC4B6', 
-    padding: 10, 
-    marginTop: 20,
-    borderRadius: '5px'  }}>
-    <Text style={{ color: 'white' }}>Submit</Text>
-    </TouchableOpacity>
+  <View style={styles.inputContainer}>
+  <Text style={styles.pickerLabel}>Price:</Text>
+ 
+  <DropDownPicker
+        zIndex={3000}
+        zIndexInverse={1000}
+        open={openPrice}
+        setOpen={setOpenPrice}
+        value={priceVal}
+        setValue={setPriceVal}
+        items={[
+          { label: '$', value: '1' },
+          { label: '$$', value: '2' },
+          { label: '$$$', value: '3' },
+          { label: '$$$$', value: '4' },
+        ]}
+        textStyle={styles.pickerText}
+        arrowStyle={styles.arrow}
+      
+      />
+</View>
+  
+  <Button title="Submit" onPress={handleSubmit} style={{ color: '#2EC4B6' }}/>
 </View>
   )}
 
 const styles = StyleSheet.create({
   inputContainer: {
-    width: '85%',
-    marginTop: 15,
+    width: '80%',
+    marginTop: 20,
   },
   input: {
     height: 40,
@@ -184,17 +175,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    backgroundColor: '#2EC4B6',
+  pickerContainer: {
+    flex: 1,
+    marginLeft: 10,
+    borderRadius: 5,
+    borderColor: 'gray',
+    borderWidth: 1,
   },
-  headerText: {
-    fontSize: 24,
+  pickerLabel: {
+    fontSize: 16,
     fontWeight: 'bold',
-    color: 'white',
+  },
+  picker: {
+    flex: .5,
   },
 });
 

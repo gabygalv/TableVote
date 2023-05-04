@@ -1,6 +1,6 @@
 from datetime import datetime
 from config import db, app
-from models import User, Party, PartyUser, Restaurant, PartyVote, FavoriteRestaurant
+from models import User, Party, PartyUser, Restaurant, PartyVote
 
 with app.app_context():
 
@@ -10,7 +10,6 @@ with app.app_context():
     PartyUser.query.delete()
     Restaurant.query.delete()
     PartyVote.query.delete()
-    FavoriteRestaurant.query.delete()
     print('deleted')
 
 

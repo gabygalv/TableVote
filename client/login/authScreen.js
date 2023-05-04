@@ -76,7 +76,8 @@ export default function AuthScreen () {
           </TouchableOpacity>
           <TouchableOpacity 
         //   onPress= {console.log('hello')} 
-          style={{ marginTop: 20 }}>
+          style={{ marginTop: 20,
+        }}>
             <Text>Don't have an account? Sign up here.</Text>
           </TouchableOpacity>
         </View>

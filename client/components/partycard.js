@@ -102,7 +102,7 @@ export default function PartyCard({ party, navigation }) {
             </View>
           </View>
           
-          {party.selected_restaurant_id === null && party.party_users.every(user => user.voted) ? (
+          {party.selected_restaurant_id || party.party_users.every(user => user.voted) ? (
             <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
               <Text style={styles.voteButtonText}>Votes  are in!</Text>
             </TouchableOpacity>

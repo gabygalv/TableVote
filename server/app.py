@@ -80,6 +80,34 @@ class UserParties(Resource):
     
 class PartiesRestaurant(Resource):
     def get(self, id):
+        
+        party_users = PartyUser.query.filter_by(party_id=id).all()
+        print(party_users)
+
+        if not all([pu.voted for pu in party_users]):
+            return {'error': 'not all users have voted'}, 404
+
+        vote_counts = {}
+        print(vote_counts)
+        for party_user in party_users:
+            party_vote = PartyVote.query.filter_by(partyuser_id=party_user.id).first()
+            if not party_vote:
+                return {'error': f'no vote found for user {party_user.id}'}, 404
+            restaurant_id = party_vote.restaurant_id
+            vote_counts[restaurant_id] = vote_counts.get(restaurant_id, 0) + 1
+
+        print(vote_counts)
+        if not vote_counts:
+            return {'error': 'no votes found'}, 404
+
+        max_count = max(vote_counts.values())
+        candidates = [k for k, v in vote_counts.items() if v == max_count]
+
+        if len(candidates) == 1:
+            return candidates[0]
+        else:
+            return random.choice(candidates)
+     
         # party_users = PartyUser.query.filter_by(id=id).all()
 
         # if not all([pu.voted for pu in party_users]):
@@ -102,34 +130,6 @@ class PartiesRestaurant(Resource):
         #     return candidates[0]
         # else:
         #     return random.choice(candidates)
-        
-        party_users = PartyUser.query.filter_by(party_id=id).all()
-        print(party_users)
-
-        if not all([pu.voted for pu in party_users]):
-            return {'error': 'not all users have voted'}, 404
-
-        vote_counts = {}
-        print(vote_counts)
-        for party_user in party_users:
-            party_vote = PartyVote.query.filter_by(partyuser_id=party_user.user_id).first()
-            if not party_vote:
-                return {'error': f'no vote found for user {party_user.id}'}, 404
-            restaurant_id = party_vote.restaurant_id
-            vote_counts[restaurant_id] = vote_counts.get(restaurant_id, 0) + 1
-
-        print(vote_counts)
-        if not vote_counts:
-            return {'error': 'no votes found'}, 404
-
-        max_count = max(vote_counts.values())
-        candidates = [k for k, v in vote_counts.items() if v == max_count]
-
-        if len(candidates) == 1:
-            return candidates[0]
-        else:
-            return random.choice(candidates)
-     
 class PartiesById(Resource):
     def patch(self, id):
         data = request.get_json()
@@ -208,8 +208,9 @@ class PartyVotes(Resource):
     def post(self):
         if session.get('user_id'):
             data = request.get_json()
+            print(data)
             newVote = PartyVote(
-                partyuser_id=data['userId'],
+                partyuser_id=data['partyuser_id'],
                 restaurant_id=data['restaurantId'],
                 voted=data['voted']
             )

@@ -9,17 +9,18 @@ const RestaurantCard = ({ restaurant, navigation }) => {
   const { isLoggedIn, setYelpData,setRefresh, refresh, currentParty } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+console.log(currentParty.party_users.find(partyUser => partyUser.user_id === isLoggedIn.id))
 
   const handleSubmit = async () => {
     try {
+      const matchingUser = currentParty.party_users.find(partyUser => partyUser.user_id === isLoggedIn.id)
       const voteResponse = await fetch('http://127.0.0.1:5555/partyvotes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userId: isLoggedIn.id,
+          partyuser_id: matchingUser.id,
           restaurantId: restaurant.id,
           voted: true
         })
@@ -45,7 +46,6 @@ const RestaurantCard = ({ restaurant, navigation }) => {
         body: JSON.stringify(restaurant)
       });
       const restaurantData = await restaurantResponse.json();
-      console.log(restaurantData);
   
       setIsSubmitted(true);
       setYelpData(null);

@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const SelectWinner = () => {
   const { winnerWinner } = useContext(UserContext);
   const { name, rating, review_count, location, display_phone, image_url } = winnerWinner;
+  console.log(winnerWinner)
 
   console.log(rating)
   const handlePress = () => {

@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 const VoteStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name={'Vote2'} component={Vote} />
+      <Stack.Screen name={'Choose a Party'} component={Vote} />
       <Stack.Screen name="RestaurantList" component={RestaurantList} />
       <Stack.Screen name="SelectWinner" component={SelectWinner} />
     </Stack.Navigator>

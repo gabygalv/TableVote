@@ -39,6 +39,7 @@ export default function PartyCard({ party, navigation }) {
 
  
   function handleSelectRestaurant() {
+    setIsLoading(true);
     fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
       .then(response => response.json())
       .then(data => {
@@ -48,6 +49,7 @@ export default function PartyCard({ party, navigation }) {
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         setWinnerWinner(data);
         return fetch(`http://127.0.0.1:5555/parties/${party.id}`, {
           method: 'PATCH',
@@ -60,8 +62,10 @@ export default function PartyCard({ party, navigation }) {
         })
       })
       .then(response => response.json())
-      .then(() => {
-        navigation.navigate('SelectWinner'); 
+      .finally(() => {
+        setIsLoading(false)
+        navigation.navigate('SelectWinner');  
+        ;
       })
       .catch(error => console.error(error));
   }

@@ -81,7 +81,28 @@ export default function PartyForm() {
   return(
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }} >
     <View style={styles.header}>
-  <Text style={styles.headerText}>Invite your party, {isLoggedIn.username}</Text>
+  <Text style={styles.headerText}>Start a party, {isLoggedIn.username}!</Text>
+  </View>
+    <View style={styles.pickerContainer}>
+    <Text >Price Range:</Text>
+    <DropDownPicker
+          transparent={false}
+          zIndex={2000}
+          zIndexInverse={1000}
+          open={openPrice}
+          setOpen={setOpenPrice}
+          value={priceVal}
+          setValue={setPriceVal}
+          items={[
+            { label: '$', value: '1' },
+            { label: '$$', value: '2' },
+            { label: '$$$', value: '3' },
+            { label: '$$$$', value: '4' },
+          ]}
+          textStyle={styles.pickerText}
+          arrowStyle={styles.arrow}
+        
+        />
   </View>
   <View style={styles.inputContainer}>
     <Text >Location:</Text>
@@ -116,29 +137,8 @@ export default function PartyForm() {
       value={usernames}
     />
   </View>
-  <View style={styles.inputContainer}>
-  <Text >Price Range:</Text>
-  <DropDownPicker
-        theme="LIGHT"
-        zIndex={3000}
-        zIndexInverse={1000}
-        open={openPrice}
-        setOpen={setOpenPrice}
-        value={priceVal}
-        setValue={setPriceVal}
-        items={[
-          { label: '$', value: '1' },
-          { label: '$$', value: '2' },
-          { label: '$$$', value: '3' },
-          { label: '$$$$', value: '4' },
-        ]}
-        textStyle={styles.pickerText}
-        arrowStyle={styles.arrow}
-      
-      />
-</View>
 
-    <View style={styles.inputContainer}>
+    <View style={styles.pickerContainer}>
       <Text > Search Radius:</Text>
       <View >
       <DropDownPicker
@@ -176,6 +176,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '85%',
     marginTop: 15,
+  },
+  pickerContainer: {
+    width: '85%',
+    marginTop: 15,
+    zIndex: 999
   },
   input: {
     height: 40,

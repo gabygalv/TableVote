@@ -37,6 +37,7 @@ export default function PartyCard({ party, navigation }) {
       });
   };
 
+ 
   function handleSelectRestaurant() {
     fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
       .then(response => response.json())

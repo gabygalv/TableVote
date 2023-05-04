@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import UserContext from '../UserContext';
@@ -58,7 +58,7 @@ const RestaurantCard = ({ restaurant, navigation }) => {
   return (
     <TouchableOpacity 
       style={styles.container}
-      onPress={() => window.open(restaurant.url, '_blank')}>
+      onPress={() => { Linking.openURL(restaurant.url)}}>
       <Image style={styles.image} source={{ uri: restaurant.image_url }} />
       <View >
         <Text style={styles.name}>{restaurant.name}</Text>

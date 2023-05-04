@@ -244,6 +244,7 @@ class YelpSearch(Resource):
 
         headers = {
             'Content-Type': 'application/json',
+
         }
 
         params = {

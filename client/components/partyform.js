@@ -1,42 +1,33 @@
-import React, { useContext, useState } from 'react';
-import {View, Text, StatusBar, TextInput, Button} from 'react-native'
+import React, { useContext, useState, useCallback } from 'react';
+import {View, Text, StyleSheet, TextInput, Button} from 'react-native'
 import UserContext from '../UserContext.js';
-import {Picker} from '@react-native-picker/picker';
-
-
-const metersPerMile = 1609;
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export default function PartyForm() {
+
   const { isLoggedIn, setRefresh, refresh } = useContext(UserContext);
+  const [usernames, setUsernames] = useState([isLoggedIn.username]);
+
   const [searchparty, setSearchparty] = useState({
     location: '',
     radius: '',
     term: '',
     price: ''
   });
-  const [usernames, setUsernames] = useState([isLoggedIn.username]);
+  const [openPrice, setOpenPrice] = useState(false);
+  const [priceVal, setPriceVal] = useState('');
+  const [openRadius, setOpenRadius] = useState(false);
+  const [radiusVal, setRadiusVal] = useState('');
 
-  
-  console.log(usernames)
-  
+  const handleInputChange = (fieldName, value) => {
+    setSearchparty({ ...searchparty, [fieldName]: String(value) });
+  };
   const handleUsernamesChange = (text) => {
     const usernamesArray = text.split(",").map((name) => name.trim());
     setUsernames(usernamesArray.filter((name) => name !== ""));
   };
-  
-  
-  const handleInputChange = (fieldName, value) => {
-    if (fieldName === 'radius') {
-      const radiusInMiles = parseInt(value);
-      if (Number.isInteger(radiusInMiles)) {
-        const radiusInMeters = radiusInMiles * metersPerMile;
-        setSearchparty({ ...searchparty, radius: radiusInMiles, radiusInMeters });
-      }
-    } else {
-      setSearchparty({ ...searchparty, [fieldName]: value });
-    }
-  };
 
+ 
   const handleSubmit = () => {
     
     const postOptions = {
@@ -48,8 +39,8 @@ export default function PartyForm() {
         creator_id: isLoggedIn.id,
         location: searchparty.location,
         term: searchparty.term,
-        radius: searchparty.radiusInMeters,
-        price: searchparty.price
+        radius: radiusVal,
+        price: priceVal
       })
     };
   
@@ -83,132 +74,121 @@ export default function PartyForm() {
       })
       .catch((err) => console.error('Error saving party data to database:', err));
   };
-  console.log(searchparty)
-
+  console.log(priceVal)
+  console.log(radiusVal)
+  console.log(usernames)
+  
   return(
     <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}>
-      <Text>Invite your party! {isLoggedIn.username}</Text>
-      <TextInput
-        style={{
-          height: 40,
-          width: '80%',
-          borderColor: 'gray',
-          borderWidth: 1,
-          marginTop: 20,
-          borderRadius: 5,
-        }}
-        placeholder="Location"
-        autoCapitalize="none"
-        onChangeText={(text) => handleInputChange('location', text)}
-        value={searchparty.location}
-      />
+  <Text>Invite your party! {isLoggedIn.username}</Text>
+  
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input}
+      placeholder="Location"
+      autoCapitalize="none"
+      onChangeText={(text) => handleInputChange('location', text)}
+      value={searchparty.location}
+    />
+  </View>
 
-    <View
-        style={{
-          height: 40,
-          width: '80%',
-          borderColor: 'gray',
-          borderWidth: 1,
-          marginTop: 20,
-          borderRadius: 5,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Text>Radius:</Text>
-        <Picker
-          style={{ width: '40%' }}
-          selectedValue={searchparty.radius ? (searchparty.radius / 1609.34).toString() : null}
-          onValueChange={(value) => handleInputChange('radius', value)}
-          mode="dropdown"
-        >
-          <Picker.Item label="5 mile" value="5" />
-          <Picker.Item label="10 miles" value="10" />
-          <Picker.Item label="15 miles" value="15" />
-          <Picker.Item label="25 miles" value="24" />
-        </Picker>
+  
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input}
+      placeholder="Search Term"
+      autoCapitalize="none"
+      onChangeText={(text) => handleInputChange('term', text)}
+      value={searchparty.term}
+      />
       </View>
+  
+  <View style={styles.inputContainer}>
+    <TextInput
+      style={styles.input}
+      placeholder="Usernames"
+      autoCapitalize="none"
+      onChangeText={(text) => handleUsernamesChange(text)}
+      value={usernames}
+    />
+  </View>
 
-      <TextInput
-        style={{
-          height: 40,
-          width: '80%',
-          borderColor: 'gray',
-          borderWidth: 1,
-          marginTop: 20,
-          borderRadius: 5,
-        }}
-        placeholder="Search Term"
-        autoCapitalize="none"
-        onChangeText={(text) => handleInputChange('term', text)}
-        value={searchparty.term}
-      />
-      <TextInput
-        style={{
-          height: 40,
-          width: '80%',
-          borderColor: 'gray',
-          borderWidth: 1,
-          marginTop: 20,
-          borderRadius: 5,
-        }}
-        placeholder="Usernames"
-        autoCapitalize="none"
-        onChangeText={(text) => handleUsernamesChange(text)}
-        value={usernames}
+    <View style={styles.inputContainer}>
+      <Text >Radius:</Text>
+      <View >
+      <DropDownPicker
+        zIndex={2000}
+        zIndexInverse={2000}
+        open={openRadius}
+        setOpen={setOpenRadius}
+        value={radiusVal}
+        setValue={setRadiusVal}
+        items={[
+          { label: '5 miles', value: '8045' },
+          { label: '10 miles', value: '16090' },
+          { label: '15 miles', value: '24135' },
+          { label: '25 miles', value: '40000' },
+        ]}
+        textStyle={styles.pickerText}
+        arrowStyle={styles.arrow}
+        
+        
         />
-
-    <View
-        style={{
-          height: 40,
-          width: '80%',
-          borderColor: 'gray',
-          borderWidth: 1,
-          marginTop: 20,
-          borderRadius: 5,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-      <Text>Price:</Text>
-      <Picker
-          label='Price'
-          mode='dropdown'
-          selectedValue={searchparty.price}
-          onValueChange={(value) => handleInputChange('price', value)}
-          style={{
-            height: 10,
-            width: '30%',
-            marginTop: 20,
-            borderRadius: 5,
-          }}
-        >
-          <Picker.Item 
-            color='#2EC4B6'
-            label="$" 
-            value="1" />
-          <Picker.Item 
-            color='#2EC4B6'
-            label="$$" 
-            value="2" />
-          <Picker.Item 
-            color='#2EC4B6'
-            label="$$$" 
-            value="3" />
-          <Picker.Item 
-            color='#2EC4B6'
-            label="$$$$" 
-            value="4" />
-        </Picker>
       </View>
-
-      <Button title="Submit" onPress={handleSubmit} 
-      style={{ color: '#2EC4B6' }}/>
-
-
-      <StatusBar style="auto" />
     </View>
-)}
+
+  <View style={styles.inputContainer}>
+  <Text style={styles.pickerLabel}>Price:</Text>
+ 
+  <DropDownPicker
+        zIndex={3000}
+        zIndexInverse={1000}
+        open={openPrice}
+        setOpen={setOpenPrice}
+        value={priceVal}
+        setValue={setPriceVal}
+        items={[
+          { label: '$', value: '1' },
+          { label: '$$', value: '2' },
+          { label: '$$$', value: '3' },
+          { label: '$$$$', value: '4' },
+        ]}
+        textStyle={styles.pickerText}
+        arrowStyle={styles.arrow}
+      
+      />
+</View>
+  
+  <Button title="Submit" onPress={handleSubmit} style={{ color: '#2EC4B6' }}/>
+</View>
+  )}
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    width: '80%',
+    marginTop: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  pickerContainer: {
+    flex: 1,
+    marginLeft: 10,
+    borderRadius: 5,
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  pickerLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  picker: {
+    flex: .5,
+  },
+});
+
 

@@ -5,7 +5,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import UserContext from '../UserContext';
 
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant, navigation }) => {
   const { isLoggedIn, setYelpData,setRefresh, refresh, currentParty } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -25,7 +25,6 @@ const RestaurantCard = ({ restaurant }) => {
         })
       });
       const voteData = await voteResponse.json();
-      console.log(voteData);
 
       const updatePartyUserResponse = await fetch(`http://127.0.0.1:5555/partyusers/${currentParty.id}/${isLoggedIn.id}`, {
         method: 'PATCH',
@@ -37,7 +36,6 @@ const RestaurantCard = ({ restaurant }) => {
         })
       });
       const updatePartyUserData = await updatePartyUserResponse.json();
-      console.log(updatePartyUserData);
         
       const restaurantResponse = await fetch('http://127.0.0.1:5555/restaurants', {
         method: 'POST',
@@ -52,11 +50,11 @@ const RestaurantCard = ({ restaurant }) => {
       setIsSubmitted(true);
       setYelpData(null);
       setRefresh(!refresh);
+      navigation.goBack();
     } catch (error) {
       console.log(error);
     }
   };
-console.log(restaurant)
   return (
     <TouchableOpacity 
       style={styles.container}

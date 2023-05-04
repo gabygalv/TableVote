@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, Text } from 'react-native';
 import PartyCard from './partycard';
 
-const PartyList = ({ loggedInParties }) => {
+const PartyList = ({ loggedInParties, navigation }) => {
 
   return (
     <FlatList
@@ -11,6 +11,7 @@ const PartyList = ({ loggedInParties }) => {
       renderItem={({ item }) => (
         <PartyCard
           party={item}
+          navigation={navigation}
         />
       )}
       ListEmptyComponent={<Text>Start a party</Text>}

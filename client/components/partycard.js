@@ -2,16 +2,13 @@ import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserContext from '../UserContext.js';
-import RestaurantList from './restaurantList';
-import { useNavigation } from '@react-navigation/native';
+import SelectWinner from './selectWinner.js';
 
 
-
-export default function PartyCard({ party }) {
-  const {setYelpData, setCurrentParty} = useContext(UserContext);
+export default function PartyCard({ party, navigation }) {
+  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(party)
   const handlePress = () => {  
     setIsLoading(true);
     setCurrentParty(party)
@@ -21,19 +18,40 @@ export default function PartyCard({ party }) {
       term: party.term,
       price: party.price,
     });
+
+    console.log(urlParams)
     const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setYelpData(data);
+        console.log(yelpData)
       })
       .catch((error) => {
         console.error(error);
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsLoading(false)
+        navigation.navigate('RestaurantList',{ yelpData: yelpData }); 
+        ;
       });
   };
+
+  function handleSelectRestaurant() {
+    fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
+      .then(response => response.json())
+      .then(data => {
+        const restaurantId = data;  
+        console.log(restaurantId)
+        return fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`);
+      })
+      .then(response => response.json())
+      .then(data => {
+        setWinnerWinner(data);
+        navigation.navigate('SelectWinner'); 
+      })
+      .catch(error => console.error(error));
+  }
 
   return (
     <>
@@ -44,7 +62,6 @@ export default function PartyCard({ party }) {
       ) : (
         <TouchableOpacity
           style={styles.container}
-          onPress={handlePress}
         >
           <View style={styles.details}>
             <Text style={styles.info}>
@@ -72,19 +89,21 @@ export default function PartyCard({ party }) {
               ))}
             </View>
           </View>
-          <View style={styles.status}>
-            {party.selected_restaurant_id === null ? (
-            party.party_users.every(user => user.voted) ? (
-           <Button title="Select Restaurant" 
-          //  onPress={handleSelectRestaurant} 
-           />
-           ) : (
-          <Text style={styles.active}>Vote!</Text>
-              )
-            ) : (
-              <Text style={styles.inactive}>Completed</Text>
-            )}
-          </View>
+          
+          {party.selected_restaurant_id === null ? (
+                party.party_users.every(user => user.voted) ? (
+                  <View style={styles.status} >
+                  <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
+                    <Text style={styles.voteButtonText}>Votes  are in!</Text>
+                  </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity style={styles.winner}>
+                    <Text style={styles.voteButtonText}onPress={handlePress}>Vote</Text>
+                  </TouchableOpacity>
+                )
+              ) : null}
+       
         </TouchableOpacity>
       )}
     </>
@@ -147,20 +166,24 @@ export default function PartyCard({ party }) {
     status: {
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 8,
+      padding: 1,
       borderTopRightRadius: 8,
       borderBottomRightRadius: 8,
       backgroundColor: '#2EC4B6',
-    },
+      flex: .25,
+        },
     active: {
-      fontSize: 14,
-      fontWeight: 'bold',
       color: '#fff',
+      marginLeft: 16,
     },
-    inactive: {
-      fontSize: 14,
-      fontWeight: 'bold',
-      color: '#fff',
+    winner: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 1,
+      borderTopRightRadius: 8,
+      borderBottomRightRadius: 8,
+      backgroundColor: '#ff9f1c',
+      flex: .25,
     },
     spinner: {
       flex: 1,
@@ -168,5 +191,16 @@ export default function PartyCard({ party }) {
       lexDirection: 'row',
       justifyContent: 'space-around',
       padding: 10,
-    }
+    },
+    voteButton: {
+      backgroundColor: '#2EC4B6',
+      padding: 8,
+      borderRadius: 4,
+      marginLeft: 16,
+    },
+    voteButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
 })

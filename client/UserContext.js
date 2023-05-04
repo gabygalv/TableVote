@@ -5,7 +5,8 @@ const UserContext = React.createContext({
     yelpData: null,
     loggedInParties: null,
     refresh: false,
-    currentParty: null
+    currentParty: null,
+    winnerWinner: null
 });
 
 export default UserContext;

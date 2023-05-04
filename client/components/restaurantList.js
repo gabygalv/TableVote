@@ -1,8 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { FlatList, Text } from 'react-native';
 import RestaurantCard from './restaurantCard';
+import UserContext from '../UserContext.js';
+import { useNavigation } from '@react-navigation/native';
 
-const RestaurantList = ({ yelpData }) => {
+
+const RestaurantList = () => {
+  const { yelpData} = useContext(UserContext);
+  const navigation = useNavigation();
+
   return (
     <FlatList
       data={yelpData?.businesses || []}
@@ -10,6 +16,7 @@ const RestaurantList = ({ yelpData }) => {
       renderItem={({ item }) => (
         <RestaurantCard
           restaurant={item}
+          navigation={navigation}
         />
       )}
       ListEmptyComponent={<Text>No Search Results Available</Text>}

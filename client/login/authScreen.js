@@ -11,7 +11,6 @@ export default function AuthScreen () {
     const {isLoggedIn, setIsLoggedIn, setLoggedInParties, setRefresh} = useContext(UserContext);
     const [login_email, setLoginEmail] = useState('');
     const [login_password, setLoginPassword] = useState('');
-    console.log(isLoggedIn)
 
     function handleLogin() {
       fetch('http://127.0.0.1:5555/login', {
@@ -50,7 +49,7 @@ export default function AuthScreen () {
                 borderColor: 'gray', 
                 borderWidth: 1, 
                 marginTop: 0,
-                borderRadius: '5px' }}
+                borderRadius: 5 }}
             placeholder="Email"
             autoCapitalize="none"
             onChangeText={(text) => setLoginEmail(text)}
@@ -62,7 +61,7 @@ export default function AuthScreen () {
                 borderColor: 'gray', 
                 borderWidth: 1, 
                 marginTop: 10,
-                borderRadius: '5px'  }}
+                borderRadius: 5  }}
             placeholder="Password"
             secureTextEntry={true}
             onChangeText={(text) => setLoginPassword(text)}
@@ -72,7 +71,7 @@ export default function AuthScreen () {
             backgroundColor: '#FF9F1C', 
             padding: 10, 
             marginTop: 20,
-            borderRadius: '5px'  }}>
+            borderRadius: 5  }}>
             <Text style={{ color: 'white' }}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity 

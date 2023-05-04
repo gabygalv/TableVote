@@ -12,6 +12,7 @@ export default function App() {
   const [loggedInParties, setLoggedInParties] = useState(null); 
   const [refresh, setRefresh] = useState(false); 
   const [currentParty, setCurrentParty] = useState(null); 
+  const [winnerWinner, setWinnerWinner] = useState(null); 
 
   console.log(isLoggedIn)
 
@@ -41,7 +42,9 @@ export default function App() {
     refresh, 
     setRefresh,
     currentParty,
-    setCurrentParty }}>
+    setCurrentParty,
+    winnerWinner,
+    setWinnerWinner }}>
     {isLoggedIn? <NavContainer isLoggedIn={isLoggedIn}/> : <AuthScreen/>}
   </UserContext.Provider>
   );

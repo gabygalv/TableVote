@@ -79,7 +79,7 @@ class UserParties(Resource):
     
 class PartiesRestaurant(Resource):
      def get(self, id):
-        party_votes = PartyVote.query.join(PartyUser).filter(PartyUser.party_id == self.id, PartyUser.voted).all()
+        party_votes = PartyVote.query.join(PartyUser).filter(PartyUser.party_id == id, PartyUser.voted).all()
         if not party_votes:
             return None
 
@@ -141,19 +141,14 @@ class PartyUsers(Resource):
     
 class PartyUsersByID(Resource):
      def patch(self, party_id, user_id):
-        print('hello!')
         data = request.get_json()
-        print(data)
         to_update = PartyUser.query.filter_by(party_id=party_id, user_id=user_id).first()
-        print(to_update)
         if to_update:
             to_update.voted = data['voted']
             db.session.commit()
             return make_response({'message': 'PartyUser updated successfully'}, 200)
         else:
             return {'error': 'PartyUser not found'}, 401
-
-
 
 
 class PartyVotes(Resource):
@@ -214,21 +209,32 @@ class YelpSearch(Resource):
         }
         response = requests.get('https://api.yelp.com/v3/businesses/search?', headers=headers, params=params)
 
-
-
         return response.json()
 
+class YelpSearchById(Resource):
+    def get(self,id ):
+
+        headers = {
+            'Authorization': 'Bearer 99eUz-8-BLbwvWhwMJSoTFPpoSIknLeEvjDtElt3bOE4sIyRsV8kwoLOkjKItr41pqWQdC7I-0xhHgSyVWl_PfAMaUmzV1CAyp7FLdI0_M_GxWdrFksBGOl1jl1MZHYx',
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.get(f'https://api.yelp.com/v3/businesses/{id}', headers=headers)
+
+        return response.json()
+    
 api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
 api.add_resource(UserParties, '/users/<int:user_id>/parties')
 api.add_resource(Parties, '/parties')
-api.add_resource(PartiesRestaurant, '/parties/<int:id>')
+api.add_resource(PartiesRestaurant, '/partiesrestaurant/<int:id>')
 api.add_resource(PartyUsers, '/partyusers')
 api.add_resource(PartyUsersByID, '/partyusers/<int:party_id>/<int:user_id>')
 api.add_resource(PartyVotes, '/partyvotes')
 api.add_resource(Restaurants, '/restaurants')
 api.add_resource(FavoriteRestaurants, '/favoriterestaurants')
 api.add_resource(YelpSearch, '/yelpsearch')
+api.add_resource(YelpSearchById, '/yelpsearchbyid/<string:id>')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')

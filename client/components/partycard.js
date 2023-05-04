@@ -41,13 +41,25 @@ export default function PartyCard({ party, navigation }) {
     fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
       .then(response => response.json())
       .then(data => {
-        const restaurantId = data;  
+        const restaurantId = data;
         console.log(restaurantId)
         return fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`);
       })
       .then(response => response.json())
       .then(data => {
         setWinnerWinner(data);
+        return fetch(`http://127.0.0.1:5555/parties/${party.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            selected_restaurant_id: data.id
+          })
+        })
+      })
+      .then(response => response.json())
+      .then(() => {
         navigation.navigate('SelectWinner'); 
       })
       .catch(error => console.error(error));
@@ -90,19 +102,15 @@ export default function PartyCard({ party, navigation }) {
             </View>
           </View>
           
-          {party.selected_restaurant_id === null ? (
-                party.party_users.every(user => user.voted) ? (
-                  <View style={styles.status} >
-                  <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
-                    <Text style={styles.voteButtonText}>Votes  are in!</Text>
-                  </TouchableOpacity>
-                  </View>
-                ) : (
-                  <TouchableOpacity style={styles.winner}>
-                    <Text style={styles.voteButtonText}onPress={handlePress}>Vote</Text>
-                  </TouchableOpacity>
-                )
-              ) : null}
+          {party.selected_restaurant_id === null && party.party_users.every(user => user.voted) ? (
+            <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
+              <Text style={styles.voteButtonText}>Votes  are in!</Text>
+            </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.winner} onPress={handlePress}>
+            <Text style={styles.voteButtonText} >Vote</Text>
+          </TouchableOpacity>
+          )}
        
         </TouchableOpacity>
       )}

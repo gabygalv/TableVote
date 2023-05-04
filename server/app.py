@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from sqlalchemy.exc import IntegrityError
 
 import requests
+import random
 
 from config import app, api, db
 from models import User, Party, PartyUser, PartyVote, Restaurant, FavoriteRestaurant
@@ -14,7 +15,8 @@ class Signup(Resource):
         try:
             new_user = User(
                 username = data['username'],
-                customer = data['customer']
+                customer = data['customer'],
+                email=data['email']
             )
             new_user.password_hash = data['password']
             db.session.add(new_user)
@@ -78,17 +80,42 @@ class UserParties(Resource):
         return make_response(user_parties, 200)
     
 class PartiesRestaurant(Resource):
-     def get(self, id):
-        party_votes = PartyVote.query.join(PartyUser).filter(PartyUser.party_id == id, PartyUser.voted).all()
-        if not party_votes:
-            return None
+    def get(self, id):
+        party_users = PartyUser.query.filter_by(id=id).all()
+
+        if not all([pu.voted for pu in party_users]):
+            return {'error': 'not all users have votes'}, 404
+
+        party_votes = PartyVote.query.filter_by(id=id).all()
+
+        if not all([pv.restaurant_id for pv in party_votes]):
+            return {'error': 'not all users have votes'}, 404
 
         vote_counts = {}
         for party_vote in party_votes:
             restaurant_id = party_vote.restaurant_id
             vote_counts[restaurant_id] = vote_counts.get(restaurant_id, 0) + 1
 
-        return max(vote_counts, key=vote_counts.get)
+        max_count = max(vote_counts.values())
+        candidates = [k for k, v in vote_counts.items() if v == max_count]
+
+        if len(candidates) == 1:
+            return candidates[0]
+        else:
+            return random.choice(candidates)
+     
+class PartiesById(Resource):
+    def patch(self, id):
+        data = request.get_json()
+        to_update = Party.query.filter_by(id=id).first()
+        if to_update:
+            for attr in data:
+                setattr(to_update, attr, data[attr])
+            db.session.add(to_update)
+            db.session.commit()
+            return make_response(to_update.to_dict(), 200)
+        else:
+            return {'error': 'Party not found'}, 401
 
 class Parties(Resource):
     def get(self):
@@ -117,8 +144,6 @@ class PartyUsers(Resource):
         party_id = request.args.get('partyId', type=int) 
         party_users = PartyUser.query.filter_by(party_id=party_id).all() 
         print(party_users)
-        # party_user_ids = [pu.id for pu in party_users]
-        # print(party_user_ids)
         return jsonify([party_users])
         
     def post(self):
@@ -215,7 +240,6 @@ class YelpSearchById(Resource):
     def get(self,id ):
 
         headers = {
-            'Authorization': 'Bearer 99eUz-8-BLbwvWhwMJSoTFPpoSIknLeEvjDtElt3bOE4sIyRsV8kwoLOkjKItr41pqWQdC7I-0xhHgSyVWl_PfAMaUmzV1CAyp7FLdI0_M_GxWdrFksBGOl1jl1MZHYx',
             'Content-Type': 'application/json',
         }
 
@@ -227,6 +251,7 @@ api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
 api.add_resource(UserParties, '/users/<int:user_id>/parties')
 api.add_resource(Parties, '/parties')
+api.add_resource(PartiesById, '/parties/<int:id>')
 api.add_resource(PartiesRestaurant, '/partiesrestaurant/<int:id>')
 api.add_resource(PartyUsers, '/partyusers')
 api.add_resource(PartyUsersByID, '/partyusers/<int:party_id>/<int:user_id>')

@@ -52,10 +52,9 @@ class Party(db.Model, SerializerMixin):
     radius = db.Column(db.Float)
     term = db.Column(db.String)
     price = db.Column(db.Integer)
+    selected_restaurant_id = db.Column(db.String)
 
     party_users = db.relationship('PartyUser', backref='party')
-    selected_restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
-    selected_restaurant = db.relationship('Restaurant', backref='parties')
 
     def __repr__(self):
         return f'<Party {self.id} * CreatorId {self.creator_id} * CreatedAt {self.created_at} >'

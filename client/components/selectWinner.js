@@ -7,6 +7,7 @@ const SelectWinner = () => {
   const { winnerWinner } = useContext(UserContext);
   const { name, rating, review_count, location, display_phone, image_url } = winnerWinner;
 
+  console.log(rating)
   const handlePress = () => {
     Linking.openURL(image_url);
   };
@@ -21,7 +22,7 @@ const SelectWinner = () => {
   </TouchableOpacity>
   {name && <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>{name}</Text>}
   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-    {[...Array(Math.floor(rating))].map((_, i) => (
+    {rating && [...Array(Math.floor(rating))].map((_, i) => (
       <Ionicons key={i} name='star' color={'#2EC4B6'} size={20} />
     ))}
     {rating % 1 !== 0 && (

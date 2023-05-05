@@ -1,8 +1,8 @@
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
-import PartyCard from './partycard';
+import PastCard from './pastcard';
 
-const PastParties = ({ loggedInParties, navigation }) => {
+const PastParties = ({ loggedInParties }) => {
     console.log(loggedInParties)
     const filteredParties = loggedInParties.filter(party => party.past_section);
 
@@ -12,9 +12,8 @@ const PastParties = ({ loggedInParties, navigation }) => {
       data={filteredParties}
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
-        <PartyCard
+        <PastCard
           party={item}
-          navigation={navigation}
         />
       )}
     />

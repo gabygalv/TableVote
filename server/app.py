@@ -108,28 +108,6 @@ class PartiesRestaurant(Resource):
         else:
             return random.choice(candidates)
      
-        # party_users = PartyUser.query.filter_by(id=id).all()
-
-        # if not all([pu.voted for pu in party_users]):
-        #     return {'error': 'not all users have votes'}, 404
-
-        # party_votes = PartyVote.query.filter_by(id=id).all()
-
-        # if not all([pv.restaurant_id for pv in party_votes]):
-        #     return {'error': 'not all users have votes'}, 404
-
-        # vote_counts = {}
-        # for party_vote in party_votes:
-        #     restaurant_id = party_vote.restaurant_id
-        #     vote_counts[restaurant_id] = vote_counts.get(restaurant_id, 0) + 1
-
-        # max_count = max(vote_counts.values())
-        # candidates = [k for k, v in vote_counts.items() if v == max_count]
-
-        # if len(candidates) == 1:
-        #     return candidates[0]
-        # else:
-        #     return random.choice(candidates)
 class PartiesById(Resource):
     def patch(self, id):
         data = request.get_json()
@@ -148,6 +126,9 @@ class PartiesById(Resource):
         db.session.commit()
         
         return make_response({'message': 'party successfully deleted!'}, 204)
+    def get(self, id):
+        party = Party.query.filter(Party.id==id).first()
+        return make_response(party.to_dict(), 200)
 
 class Parties(Resource):
     def get(self):

@@ -6,13 +6,10 @@ import SelectWinner from './selectWinner.js';
 
 
 export default function PartyCard({ party, navigation, onDelete, onArchive }) {
-  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData} = useContext(UserContext);
+  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData, refresh, setRefresh} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  
-  const handleEditParty = () => {
-    console.log('clicked edit!')
-  };
+
   
 
   const handlePress = () => {  
@@ -37,21 +34,28 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       })
       .finally(() => {
         setIsLoading(false)
+        setRefresh(!refresh)
         navigation.navigate('RestaurantList',{ yelpData: yelpData }); 
         ;
       });
   };
 
- 
+    const handleToggleOptions = () => {
+      setShowOptions(!showOptions);
+  };
+
   function handleSelectRestaurant() {
     setIsLoading(true);
-    fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
+    fetch(`http://127.0.0.1:5555/parties/${party.id}`)
       .then(response => response.json())
       .then(data => {
-        const restaurantId = data;
-        console.log(restaurantId)
-        return fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`);
+        const restaurantId = data.selected_restaurant_id || fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
+          .then(response => response.json())
+          .then(data => data);
+        console.log(restaurantId);
+        return Promise.resolve(restaurantId);
       })
+      .then(restaurantId => fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`))
       .then(response => response.json())
       .then(data => {
         setWinnerWinner(data);
@@ -69,13 +73,9 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       .finally(() => {
         setIsLoading(false)
         navigation.navigate('SelectWinner');  
-        ;
       })
       .catch(error => console.error(error));
   }
-    const handleToggleOptions = () => {
-      setShowOptions(!showOptions);
-  };
 
   return (
     <>
@@ -106,7 +106,7 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
                     {user.voted ? (
                       <Ionicons name="thumbs-up" color={"#2EC4B6"} />
                     ) : (
-                      <Ionicons name="hourglass" color={"#2EC4B6"} />
+                      <Ionicons name="hourglass" color={"#FF9F1C"} />
                     )}
                   </Text>
                 </View>
@@ -120,12 +120,9 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
 
           {showOptions && (
             <View style={styles.optionsMenu}>
-              <TouchableOpacity style={styles.option} onPress={handleEditParty}>
-                <Text>Edit Party</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.option} onPress={onArchive}>
-                <Text>Remove from View</Text>
-              </TouchableOpacity>
+              {party.party_users.every(user => user.voted) ? <TouchableOpacity style={styles.option} onPress={onArchive}>
+                <Text>Move to past parties</Text>
+              </TouchableOpacity>: null}
               <TouchableOpacity style={styles.option} onPress={onDelete}>
                 <Text>Delete Party</Text>
               </TouchableOpacity>

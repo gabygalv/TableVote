@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import TVLogo from '../assets/tvlogo.png'
 
 export default function AuthScreen () {
-    // const navigation = useNavigation();
     const {isLoggedIn, setIsLoggedIn, setLoggedInParties, setRefresh} = useContext(UserContext);
     const [login_email, setLoginEmail] = useState('');
     const [login_password, setLoginPassword] = useState('');
@@ -75,9 +74,9 @@ export default function AuthScreen () {
             <Text style={{ color: 'white' }}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-        //   onPress= {console.log('hello')} 
           style={{ marginTop: 20,
-        }}>
+        }}
+          >
             <Text>Don't have an account? Sign up here.</Text>
           </TouchableOpacity>
         </View>

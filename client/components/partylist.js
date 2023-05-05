@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Image } from 'react-native';
+import { FlatList, View, Image, Text } from 'react-native';
 import PartyCard from './partycard';
 import NewParty from '../assets/newParty.png'
 
@@ -55,8 +55,8 @@ const PartyList = ({ loggedInParties, navigation, setLoggedInParties, isLoggedIn
         />
       )}
       ListEmptyComponent={
-        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-          <Image source={NewParty} style={{ width: '85%', resizeMode: 'contain' }} />
+        <View style={{ bottom: 180  }}>
+          <Image source={NewParty} style={{ width: '60%', resizeMode: 'contain', alignSelf: 'center'  }} />
         </View>
     }
     />

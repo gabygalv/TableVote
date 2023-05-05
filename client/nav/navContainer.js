@@ -19,6 +19,16 @@ const Stack = createStackNavigator();
 
 const VoteStack = () => {
   return (
+    <Stack.Navigator >
+      <Stack.Screen name={'Choose a Party'} component={Vote} />
+      <Stack.Screen name="RestaurantList" component={RestaurantList} />
+      <Stack.Screen name="SelectWinner" component={SelectWinner} />
+    </Stack.Navigator>
+  );
+};
+
+const ProfileStack = () => {
+  return (
     <Stack.Navigator>
       <Stack.Screen name={'Choose a Party'} component={Vote} />
       <Stack.Screen name="RestaurantList" component={RestaurantList} />
@@ -62,8 +72,8 @@ const NavContainer = () => {
       >
 
         <Tab.Screen name={voteTab} component={VoteStack} screenOptions={{ headerShown: false }}/>
-        <Tab.Screen name={partyTab} component={Party} screenOptions={{ headerShown: true }}/>
-        <Tab.Screen name={profileTab} component={Profile} screenOptions={{ headerShown: true }}/>
+        <Tab.Screen name={partyTab} component={Party} />
+        <Tab.Screen name={profileTab} component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>
   );

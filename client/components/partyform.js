@@ -79,7 +79,7 @@ export default function PartyForm() {
     
     
   return(
-    <View style={{ flex:1, justifyContent:'center', alignItems:'center' }} >
+    <View style={{ flex:1, marginTop:50, justifyContent:'top', alignItems:'center' }} >
     <View style={styles.header}>
   <Text style={styles.headerText}>Start a party, {isLoggedIn.username}!</Text>
   </View>

@@ -4,7 +4,7 @@ from flask_restful import Resource
 import requests
 import random
 
-from config import app, api, db
+from config import app, api, db, API_KEY
 from models import User, Party, PartyUser, PartyVote, Restaurant
 
 class Signup(Resource):
@@ -231,7 +231,7 @@ class YelpSearch(Resource):
 
         headers = {
             'Content-Type': 'application/json',
-
+            'Authorization': f'Bearer {API_KEY}',
         }
 
         params = {
@@ -250,6 +250,7 @@ class YelpSearchById(Resource):
     def get(self,id ):
 
         headers = {
+            'Authorization': f'Bearer {API_KEY}',
             'Content-Type': 'application/json',
         }
 

@@ -142,6 +142,12 @@ class PartiesById(Resource):
             return make_response(to_update.to_dict(), 200)
         else:
             return {'error': 'Party not found'}, 401
+    def delete(self, id):
+        to_delete = Party.query.filter(Party.id==id).first()
+        db.session.delete(to_delete)
+        db.session.commit()
+        
+        return make_response({'message': 'party successfully deleted!'}, 204)
 
 class Parties(Resource):
     def get(self):

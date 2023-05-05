@@ -3,18 +3,19 @@ import React, { useContext } from 'react';
 import UserContext from '../UserContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const SelectWinner = () => {
+const SelectWinner = ({party}) => {
   const { winnerWinner } = useContext(UserContext);
   const { name, rating, review_count, location, display_phone, image_url } = winnerWinner;
-  console.log(winnerWinner)
+  console.log(party)
 
-  console.log(rating)
   const handlePress = () => {
     Linking.openURL(image_url);
   };
 
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+     
   <TouchableOpacity onPress={handlePress}>
     <Image
       source={{ uri: image_url }}

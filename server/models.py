@@ -52,8 +52,9 @@ class Party(db.Model, SerializerMixin):
     term = db.Column(db.String)
     price = db.Column(db.Integer)
     selected_restaurant_id = db.Column(db.String)
+    past_section = db.Column(db.Boolean)
 
-    party_users = db.relationship('PartyUser', backref='party')
+    party_users = db.relationship('PartyUser', backref='party', cascade='all,delete-orphan')
 
     def __repr__(self):
         return f'<Party {self.id} * CreatorId {self.creator_id} * CreatedAt {self.created_at} >'
@@ -69,7 +70,7 @@ class PartyUser(db.Model, SerializerMixin):
     voted = db.Column(db.Boolean)
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    party_vote = db.relationship('PartyVote', backref='partyuser')
+    party_vote = db.relationship('PartyVote', backref='partyuser', cascade='all,delete-orphan')
     selected_restaurant = association_proxy('party', 'selected_restaurant')
 
 

@@ -126,9 +126,11 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   name: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
+    flexWrap: 'wrap',
+    flexShrink: 1,
   },
   category: {
     color: '#666',
@@ -164,6 +166,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     flex: 1,
     paddingRight: 15,
+    flexShrink: 1,
   },
 });
 

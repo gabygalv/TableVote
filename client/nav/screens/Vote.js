@@ -9,35 +9,18 @@ import {useNavigation} from '@react-navigation/native'
 
 
 export default function Vote({ }) {
-  const {setYelpData, yelpData, loggedInParties, winnerWinner} = useContext(UserContext);
+  const { isLoggedIn, loggedInParties, setLoggedInParties} = useContext(UserContext);
   const navigation = useNavigation()
   return (
     <View>
-      {/* {winnerWinner ? (
-        <SelectWinner winner={winnerWinner} />
-      ) : yelpData ? (
-        <RestaurantList yelpData={yelpData} />
-      ) : null} */}
-      <PartyList loggedInParties={loggedInParties} navigation={navigation} />
+      <PartyList 
+      setLoggedInParties={setLoggedInParties} 
+      loggedInParties={loggedInParties} 
+      navigation={navigation} 
+      isLoggedIn={isLoggedIn}
+      />
       <StatusBar style="auto" />
     </View>
   );
-  // return (
-  //   <View>
-  //     {winnerWinner ? (
-  //       <SelectWinner />
-  //     ) : (
-  //       <>
-  //         {yelpData && <RestaurantList yelpData={yelpData} />}
-  //         <PartyList loggedInParties={loggedInParties} />
-  //       </>
-  //     )}
-  //     <StatusBar style="auto" />
-  //   </View>
-  //   // <View >
-  //   // {yelpData ? <RestaurantList yelpData={yelpData}/> : null}
-  //   //   <PartyList loggedInParties={loggedInParties} />
-  //   //   <StatusBar style="auto" />
-  //   // </View>
-  // );
+  
 }

@@ -4,7 +4,7 @@ import PartyCard from './partycard';
 
 const PastParties = ({ loggedInParties, navigation }) => {
     console.log(loggedInParties)
-    const filteredParties = loggedInParties.filter(party => party.selected_restaurant_id);
+    const filteredParties = loggedInParties.filter(party => party.past_section);
 
   return (
     <View style={{flex: 1}}>

@@ -5,9 +5,15 @@ import UserContext from '../UserContext.js';
 import SelectWinner from './selectWinner.js';
 
 
-export default function PartyCard({ party, navigation }) {
+export default function PartyCard({ party, navigation, onDelete, onArchive }) {
   const {setYelpData, setCurrentParty, setWinnerWinner, yelpData} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+  
+  const handleEditParty = () => {
+    console.log('clicked edit!')
+  };
+  
 
   const handlePress = () => {  
     setIsLoading(true);
@@ -19,7 +25,6 @@ export default function PartyCard({ party, navigation }) {
       price: party.price,
     });
 
-    console.log(urlParams)
     const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
     fetch(url)
       .then((response) => response.json())
@@ -49,7 +54,6 @@ export default function PartyCard({ party, navigation }) {
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         setWinnerWinner(data);
         return fetch(`http://127.0.0.1:5555/parties/${party.id}`, {
           method: 'PATCH',
@@ -69,6 +73,9 @@ export default function PartyCard({ party, navigation }) {
       })
       .catch(error => console.error(error));
   }
+    const handleToggleOptions = () => {
+      setShowOptions(!showOptions);
+  };
 
   return (
     <>
@@ -107,19 +114,87 @@ export default function PartyCard({ party, navigation }) {
             </View>
           </View>
           
+          <TouchableOpacity style={styles.optionsButton} onPress={handleToggleOptions}>
+            <Ionicons name="ellipsis-vertical" size={24} color="#2EC4B6" />
+          </TouchableOpacity>
+
+          {showOptions && (
+            <View style={styles.optionsMenu}>
+              <TouchableOpacity style={styles.option} onPress={handleEditParty}>
+                <Text>Edit Party</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.option} onPress={onArchive}>
+                <Text>Remove from View</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.option} onPress={onDelete}>
+                <Text>Delete Party</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {party.selected_restaurant_id || party.party_users.every(user => user.voted) ? (
             <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
               <Text style={styles.voteButtonText}>Votes  are in!</Text>
             </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.winner} onPress={handlePress}>
-            <Text style={styles.voteButtonText} >Vote</Text>
-          </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.winner} onPress={handlePress}>
+              <Text style={styles.voteButtonText} >Vote</Text>
+            </TouchableOpacity>
           )}
        
         </TouchableOpacity>
       )}
     </>
+
+    // <>
+    //   {isLoading ? (
+    //     <View style={styles.spinner}>
+    //       <ActivityIndicator size="large" color="#2EC4B6" />
+    //     </View>
+    //   ) : (
+    //     <TouchableOpacity
+    //       style={styles.container}
+    //     >
+    //       <View style={styles.details}>
+    //         <Text style={styles.info}>
+    //           Party Location: {party.location}
+    //         </Text>
+    //         <Text style={styles.info}>
+    //           Created by: {party.user.username}
+    //         </Text>
+    //         <Text style={styles.info}>
+    //           Created at: {party.created_at}
+    //         </Text>
+    //         <View style={styles.users}>
+    //           <Text style={styles.info}>Users in Party: </Text>
+    //           {party.party_users.map((user) => (
+    //             <View style={styles.user} key={user.id}>
+    //               <Text style={styles.username}>
+    //                 {user.user.username}
+    //                 {user.voted ? (
+    //                   <Ionicons name="thumbs-up" color={"#2EC4B6"} />
+    //                 ) : (
+    //                   <Ionicons name="hourglass" color={"#2EC4B6"} />
+    //                 )}
+    //               </Text>
+    //             </View>
+    //           ))}
+    //         </View>
+    //       </View>
+          
+    //       {party.selected_restaurant_id || party.party_users.every(user => user.voted) ? (
+    //         <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
+    //           <Text style={styles.voteButtonText}>Votes  are in!</Text>
+    //         </TouchableOpacity>
+    //     ) : (
+    //       <TouchableOpacity style={styles.winner} onPress={handlePress}>
+    //         <Text style={styles.voteButtonText} >Vote</Text>
+    //       </TouchableOpacity>
+    //       )}
+       
+    //     </TouchableOpacity>
+    //   )}
+    // </>
   );
   };
   
@@ -215,5 +290,25 @@ export default function PartyCard({ party, navigation }) {
       color: 'white',
       fontWeight: 'bold',
       fontSize: 16,
+    },
+    optionsButton: {
+      top: 3,
+      right: 3,
+      zIndex: 1,
+    },
+    optionsMenu: {
+      position: "absolute",
+      top: 20,
+      right: 5,
+      backgroundColor: "#fff",
+      borderRadius: 5,
+      padding: 10,
+      zIndex: 1,
+      elevation: 1,
+    },
+    option: {
+      padding: 5,
+      color: '#666',
+
     },
 })

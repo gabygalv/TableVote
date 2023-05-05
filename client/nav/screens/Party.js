@@ -8,9 +8,7 @@ export default function Party() {
   return(
     <>
     
-    <PartyForm/>
-    {/* <PartyCard partyId={1}/> */}
-   
+    <PartyForm/>   
     </>
 )}
 

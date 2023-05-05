@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserContext from '../UserContext.js';
@@ -6,7 +6,7 @@ import SelectWinner from './selectWinner.js';
 
 
 export default function PartyCard({ party, navigation, onDelete, onArchive }) {
-  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData, refresh, setRefresh} = useContext(UserContext);
+  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData, refresh, setRefresh, isLoggedIn} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
@@ -141,67 +141,23 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
 
           {party.selected_restaurant_id || party.party_users.every(user => user.voted) ? (
             <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
-              <Text style={styles.voteButtonText}>Votes  are in!</Text>
+              <Text style={styles.voteButtonText}>Votes are in!</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.winner} onPress={handlePress}>
-              <Text style={styles.voteButtonText} >Vote</Text>
-            </TouchableOpacity>
+            party.party_users.some(user => user.user_id === isLoggedIn.id && user.voted) ? (
+              <TouchableOpacity style={[styles.winner, styles.disabled]}>
+                <Text style={styles.voteButtonText}>Voted</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.winner} onPress={handlePress}>
+                <Text style={styles.voteButtonText}>Vote</Text>
+              </TouchableOpacity>
+            )
           )}
        
         </TouchableOpacity>
       )}
     </>
-
-    // <>
-    //   {isLoading ? (
-    //     <View style={styles.spinner}>
-    //       <ActivityIndicator size="large" color="#2EC4B6" />
-    //     </View>
-    //   ) : (
-    //     <TouchableOpacity
-    //       style={styles.container}
-    //     >
-    //       <View style={styles.details}>
-    //         <Text style={styles.info}>
-    //           Party Location: {party.location}
-    //         </Text>
-    //         <Text style={styles.info}>
-    //           Created by: {party.user.username}
-    //         </Text>
-    //         <Text style={styles.info}>
-    //           Created at: {party.created_at}
-    //         </Text>
-    //         <View style={styles.users}>
-    //           <Text style={styles.info}>Users in Party: </Text>
-    //           {party.party_users.map((user) => (
-    //             <View style={styles.user} key={user.id}>
-    //               <Text style={styles.username}>
-    //                 {user.user.username}
-    //                 {user.voted ? (
-    //                   <Ionicons name="thumbs-up" color={"#2EC4B6"} />
-    //                 ) : (
-    //                   <Ionicons name="hourglass" color={"#2EC4B6"} />
-    //                 )}
-    //               </Text>
-    //             </View>
-    //           ))}
-    //         </View>
-    //       </View>
-          
-    //       {party.selected_restaurant_id || party.party_users.every(user => user.voted) ? (
-    //         <TouchableOpacity style={styles.status} onPress={handleSelectRestaurant}>
-    //           <Text style={styles.voteButtonText}>Votes  are in!</Text>
-    //         </TouchableOpacity>
-    //     ) : (
-    //       <TouchableOpacity style={styles.winner} onPress={handlePress}>
-    //         <Text style={styles.voteButtonText} >Vote</Text>
-    //       </TouchableOpacity>
-    //       )}
-       
-    //     </TouchableOpacity>
-    //   )}
-    // </>
   );
   };
   

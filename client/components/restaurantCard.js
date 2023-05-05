@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    flexWrap: 'wrap',
+    flexShrink: 1,
+
   },
   image: {
     height: 125,
@@ -129,8 +132,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
-    flexWrap: 'wrap',
-    flexShrink: 1,
+    // flexWrap: 'wrap',
+    // flexShrink: 1,
   },
   category: {
     color: '#666',

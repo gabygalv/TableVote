@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, Linking, Button } from 'react-nati
 import React, { useContext } from 'react';
 import UserContext from '../UserContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import yelp_burst from '../assets/yelp_burst.png';
 
 const SelectWinner = ({party}) => {
   const { winnerWinner } = useContext(UserContext);
@@ -35,7 +36,8 @@ const SelectWinner = ({party}) => {
   </View>
   {location?.display_address?.length > 0 && <Text style={{ fontSize: 16, marginTop: 10 }}>{location.display_address.join(', ')}</Text>}
   {display_phone && <Text style={{ fontSize: 16, marginTop: 10 }}>{display_phone}</Text>}
-  {winnerWinner.url && <Button title={'View on Yelp'} style={{ fontSize: 16, marginTop: 10 }} onPress={() => {
+  {winnerWinner.url && 
+  <Button title={'View on Yelp'} style={{ fontSize: 16, marginTop: 10 }} onPress={() => {
     Linking.openURL(winnerWinner.url);
   }} />}
 </View>

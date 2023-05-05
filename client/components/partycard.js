@@ -10,6 +10,13 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
+  const dateStr = party.created_at;
+  const dateObj = new Date(dateStr);
+  const formattedDate = dateObj.toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: '2-digit'
+  });
   
 
   const handlePress = () => {  
@@ -95,7 +102,10 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
               Created by: {party.user.username}
             </Text>
             <Text style={styles.info}>
-              Created at: {party.created_at}
+              Party started: {formattedDate}
+            </Text>
+            <Text style={styles.info}>
+              Search Term: {party.term}
             </Text>
             <View style={styles.users}>
               <Text style={styles.info}>Users in Party: </Text>

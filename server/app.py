@@ -8,13 +8,12 @@ from config import app, api, db
 from models import User, Party, PartyUser, PartyVote, Restaurant
 
 class Signup(Resource):
-
     def post(self):
         data = request.get_json()
+        print(data)
         try:
             new_user = User(
                 username = data['username'],
-                customer = data['customer'],
                 email=data['email']
             )
             new_user.password_hash = data['password']

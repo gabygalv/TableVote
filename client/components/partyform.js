@@ -27,55 +27,74 @@ export default function PartyForm() {
     setUsernames(usernamesArray.filter((name) => name !== ""));
   };
 
- 
-  const handleSubmit = () => {
-    
-    const postOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        creator_id: isLoggedIn.id,
-        location: searchparty.location,
-        term: searchparty.term,
-        radius: radiusVal,
-        price: priceVal
-      })
-    };
+  const handleSubmit = async () => {
+    try {
+      const usersResponse = await fetch('http://127.0.0.1:5555/users');
+      const users = await usersResponse.json();
+      const usernamesSet = new Set(usernames);
+      const existingUsernamesSet = new Set(users.map(user => user.username));
+      
+      // Check that all usernames in the usernames array exist in the users endpoint
+      for (const username of usernamesSet) {
+        if (!existingUsernamesSet.has(username)) {
+          alert(`User with username "${username}" does not exist`);
+          return;
+        }
+      }
   
-    fetch('http://127.0.0.1:5555/parties', postOptions)
-      .then((res) => {
-        if (res.ok) {
-          alert('Your party has been created, head to the vote tab to start voting!');
-        } else {
-          console.error('Error saving party data to database:', res.statusText);
-          alert('Error saving party data to database:', res.statusText);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data) {
-          const id = data.id;
-          const userArray = [...usernames, isLoggedIn.username];
-          fetch('http://127.0.0.1:5555/partyusers', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              party_id: id,
-              usernames: userArray
-            })
-          });
-          setRefresh(!refresh);
-          setSearchparty('')
-          setPriceVal('')
-          setRadiusVal('')
-        }
-      })
-      .catch((err) => console.error('Error saving party data to database:', err));
-    };
+      const postOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          creator_id: isLoggedIn.id,
+          location: searchparty.location,
+          term: searchparty.term,
+          radius: radiusVal,
+          price: priceVal
+        })
+      };
+    
+      const partiesResponse = await fetch('http://127.0.0.1:5555/parties', postOptions);
+      if (!partiesResponse.ok) {
+        const errorText = await partiesResponse.text();
+        console.error('Error saving party data to database:', errorText);
+        alert('Error saving party data to database:', errorText);
+        return;
+      }
+  
+      const data = await partiesResponse.json();
+      const id = data.id;
+      const userArray = [...usernamesSet, isLoggedIn.username];
+      const partyUsersResponse = await fetch('http://127.0.0.1:5555/partyusers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          party_id: id,
+          usernames: userArray
+        })
+      });
+      if (!partyUsersResponse.ok) {
+        const errorText = await partyUsersResponse.text();
+        console.error('Error saving party data to database:', errorText);
+        alert('Error saving party data to database:', errorText);
+        return;
+      }
+  
+      setRefresh(!refresh);
+      setSearchparty('')
+      setPriceVal('')
+      setRadiusVal('')
+      setUsernames('')
+      alert('Your party has been created, head to the vote tab to start voting!');
+    } catch (err) {
+      console.error('Error saving party data to database:', err);
+      alert('Error saving party data to database:', err);
+    }
+  };
     
     
   return(

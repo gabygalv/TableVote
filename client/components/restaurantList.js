@@ -5,6 +5,7 @@ import UserContext from '../UserContext.js';
 import { useNavigation } from '@react-navigation/native';
 
 
+
 const RestaurantList = () => {
   const { yelpData} = useContext(UserContext);
   const navigation = useNavigation();

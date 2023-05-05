@@ -95,9 +95,6 @@ console.log(currentParty.party_users.find(partyUser => partyUser.user_id === isL
             <Text style={styles.submit}>Submit</Text>
           </TouchableOpacity>
         )}
-        {isChecked && isSubmitted && (
-          <Text style={styles.submitted}>Submitted</Text>
-        )}
       </View>
     </TouchableOpacity>
   );
@@ -171,6 +168,12 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     flexShrink: 1,
   },
+  submit: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FF9F1C',
+    padding: 5
+  }
 });
 
 export default RestaurantCard;

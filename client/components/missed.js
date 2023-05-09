@@ -2,7 +2,6 @@ import React, {useContext} from 'react';
 import { FlatList, Text } from 'react-native';
 import MissedCard from './missedCard';
 import UserContext from '../UserContext.js';
-import { useNavigation } from '@react-navigation/native';
 
 const MissedConnections = () => {
     const { missed } = useContext(UserContext);

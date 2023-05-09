@@ -18,7 +18,7 @@ export default function Profile() {
   const handleMissed = async () => {
     if (missed === null) {
       try {
-        const response = await fetch(`http://tablevote.onrender.com//users/${isLoggedIn.id}/missed`);
+        const response = await fetch(`http://tablevote.onrender.com/users/${isLoggedIn.id}/missed`);
         const data = await response.json();
         const restaurantIds = data;
         const restaurants = await Promise.all(restaurantIds.map(async (restaurantId) => {

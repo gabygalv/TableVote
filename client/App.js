@@ -18,12 +18,12 @@ export default function App() {
   console.log(isLoggedIn)
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5555/check_session")
+    fetch("http://tablevote.onrender.com/check_session")
       .then((r) => {
         if (r.ok) {
           r.json().then((currentUser) => {
             setIsLoggedIn(currentUser);
-            fetch(`http://127.0.0.1:5555/users/${currentUser.id}/parties`)
+            fetch(`http://tablevote.onrender.com/users/${currentUser.id}/parties`)
               .then((res) => res.json())
               .then((parties) => {
                 setLoggedInParties(parties);

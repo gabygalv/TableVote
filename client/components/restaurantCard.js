@@ -14,20 +14,20 @@ console.log(currentParty.party_users.find(partyUser => partyUser.user_id === isL
   const handleSubmit = async () => {
     try {
       const matchingUser = currentParty.party_users.find(partyUser => partyUser.user_id === isLoggedIn.id)
-      const voteResponse = await fetch('http://127.0.0.1:5555/partyvotes', {
+      const voteResponse = await fetch('http://tablevote.onrender.com/partyvotes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           partyuser_id: matchingUser.id,
-          restaurantId: restaurant.id,
+          restaurant: restaurant.id,
           voted: true
         })
       });
       const voteData = await voteResponse.json();
 
-      const updatePartyUserResponse = await fetch(`http://127.0.0.1:5555/partyusers/${currentParty.id}/${isLoggedIn.id}`, {
+      const updatePartyUserResponse = await fetch(`http://tablevote.onrender.com/partyusers/${currentParty.id}/${isLoggedIn.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -37,15 +37,6 @@ console.log(currentParty.party_users.find(partyUser => partyUser.user_id === isL
         })
       });
       const updatePartyUserData = await updatePartyUserResponse.json();
-        
-      const restaurantResponse = await fetch('http://127.0.0.1:5555/restaurants', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(restaurant)
-      });
-      const restaurantData = await restaurantResponse.json();
   
       setIsSubmitted(true);
       setYelpData(null);

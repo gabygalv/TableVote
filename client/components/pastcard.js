@@ -20,11 +20,11 @@ export default function PastCard({ party }) {
  
   function handleViewWinner() {
     setIsLoading(true);
-    fetch(`http://127.0.0.1:5555/parties/${party.id}`)
+    fetch(`http://tablevote.onrender.com/parties/${party.id}`)
       .then(response => response.json())
       .then(data => {
         const restaurantId = data.selected_restaurant_id;
-        return fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`);
+        return fetch(`http://tablevote.onrender.com/yelpsearchbyid/${restaurantId}`);
       })
       .then(response => response.json())
       .then(data => {

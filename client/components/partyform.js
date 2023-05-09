@@ -29,7 +29,7 @@ export default function PartyForm() {
 
   const handleSubmit = async () => {
     try {
-      const usersResponse = await fetch('http://127.0.0.1:5555/users');
+      const usersResponse = await fetch('http://tablevote.onrender.com/users');
       const users = await usersResponse.json();
       const usernamesSet = new Set(usernames);
       const existingUsernamesSet = new Set(users.map(user => user.username));
@@ -56,7 +56,7 @@ export default function PartyForm() {
         })
       };
     
-      const partiesResponse = await fetch('http://127.0.0.1:5555/parties', postOptions);
+      const partiesResponse = await fetch('http://tablevote.onrender.com/parties', postOptions);
       if (!partiesResponse.ok) {
         const errorText = await partiesResponse.text();
         console.error('Error saving party data to database:', errorText);
@@ -67,7 +67,7 @@ export default function PartyForm() {
       const data = await partiesResponse.json();
       const id = data.id;
       const userArray = [...usernamesSet, isLoggedIn.username];
-      const partyUsersResponse = await fetch('http://127.0.0.1:5555/partyusers', {
+      const partyUsersResponse = await fetch('http://tablevote.onrender.com/partyusers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

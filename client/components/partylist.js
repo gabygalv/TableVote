@@ -7,7 +7,7 @@ import NewParty from '../assets/newParty.png'
 const PartyList = ({ loggedInParties, navigation, setLoggedInParties, isLoggedIn }) => {
 
   const handleDeleteParty = (partyId) => {
-    fetch(`http://127.0.0.1:5555/parties/${partyId}`, {
+    fetch(`http://tablevote.onrender.com/parties/${partyId}`, {
       method: 'DELETE'
     })
     .then(res => {
@@ -20,7 +20,7 @@ const PartyList = ({ loggedInParties, navigation, setLoggedInParties, isLoggedIn
   }
 
   const handleArchiveParty = (partyId) => {
-    fetch(`http://127.0.0.1:5555/parties/${partyId}`, {
+    fetch(`http://tablevote.onrender.com/parties/${partyId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ const PartyList = ({ loggedInParties, navigation, setLoggedInParties, isLoggedIn
     }) 
     .then(res => {
       if (res.ok) {
-        fetch(`http://127.0.0.1:5555/users/${isLoggedIn.id}/parties`)
+        fetch(`http://tablevote.onrender.com/users/${isLoggedIn.id}/parties`)
           .then((res) => res.json())
           .then((parties) => {
             setLoggedInParties(parties);

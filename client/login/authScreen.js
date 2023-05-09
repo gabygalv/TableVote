@@ -16,7 +16,7 @@ export default function AuthScreen () {
     const [signup, setSignup] = useState(false);
 
     function handleLogin() {
-      fetch('http://127.0.0.1:5555/login', {
+      fetch('http://tablevote.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export default function AuthScreen () {
           if (res.ok) {
             res.json().then((user) => {
               setIsLoggedIn(user);
-              fetch(`http://127.0.0.1:5555/users/${user.id}/parties`)
+              fetch(`http://tablevote.onrender.com/users/${user.id}/parties`)
           .then((res) => res.json())
           .then((parties) => {
             setLoggedInParties(parties);
@@ -45,7 +45,7 @@ export default function AuthScreen () {
     }
 
     function handleSignup() {
-      fetch('http://127.0.0.1:5555/signup', {
+      fetch('http://tablevote.onrender.com/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export default function AuthScreen () {
           if (res.ok) {
             res.json().then((user) => {
               setIsLoggedIn(user);
-              fetch(`http://127.0.0.1:5555/users/${user.id}/parties`)
+              fetch(`http://tablevote.onrender.com/users/${user.id}/parties`)
           .then((res) => res.json())
           .then((parties) => {
             setLoggedInParties(parties);

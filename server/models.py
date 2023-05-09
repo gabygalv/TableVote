@@ -84,7 +84,7 @@ class PartyVote(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     partyuser_id = db.Column(db.Integer, db.ForeignKey('party_users.id'))
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
+    restaurant_id = db.Column(db.String, db.ForeignKey('restaurants.id'))
     voted = db.Column(db.Boolean)
     updated_at = db.Column(db.DateTime, server_default=db.func.current_date())
 

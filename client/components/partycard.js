@@ -29,7 +29,7 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       price: party.price,
     });
 
-    const url = `http://127.0.0.1:5555/yelpsearch?${urlParams.toString()}`;
+    const url = `http://tablevote.onrender.com/yelpsearch?${urlParams.toString()}`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -51,39 +51,43 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       setShowOptions(!showOptions);
   };
 
-  function handleSelectRestaurant() {
-    setIsLoading(true);
-    fetch(`http://127.0.0.1:5555/parties/${party.id}`)
-      .then(response => response.json())
-      .then(data => {
-        const restaurantId = data.selected_restaurant_id || fetch(`http://127.0.0.1:5555/partiesrestaurant/${party.id}`)
-          .then(response => response.json())
-          .then(data => data);
-        console.log(restaurantId);
-        return Promise.resolve(restaurantId);
-      })
-      .then(restaurantId => fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`))
-      .then(response => response.json())
-      .then(data => {
-        setWinnerWinner(data);
-        return fetch(`http://127.0.0.1:5555/parties/${party.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            selected_restaurant_id: data.id
-          })
+  async function handleSelectRestaurant() {
+    try {
+      setIsLoading(true);
+  
+      const response = await fetch(`http://tablevote.onrender.com/parties/${party.id}`);
+      const data = await response.json();
+  
+      let restaurantId = data.selected_restaurant_id;
+      if (!restaurantId) {
+        const restaurantResponse = await fetch(`http://tablevote.onrender.com/partiesrestaurant/${party.id}`);
+        const restaurantData = await restaurantResponse.json();
+        restaurantId = restaurantData;
+      }
+      console.log(restaurantId);
+  
+      const restaurantResponse = await fetch(`http://tablevote.onrender.com/yelpsearchbyid/${restaurantId}`);
+      const restaurantData = await restaurantResponse.json();
+      setWinnerWinner(restaurantData);
+  
+      const patchResponse = await fetch(`http://tablevote.onrender.com/parties/${party.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          selected_restaurant_id: restaurantData.id
         })
-      })
-      .then(response => response.json())
-      .finally(() => {
-        setIsLoading(false)
-        navigation.navigate('SelectWinner');  
-      })
-      .catch(error => console.error(error));
+      });
+      await patchResponse.json();
+  
+      navigation.navigate('SelectWinner');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
-
   return (
     <>
       {isLoading ? (

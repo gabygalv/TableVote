@@ -18,11 +18,11 @@ export default function Profile() {
   const handleMissed = async () => {
     if (missed === null) {
       try {
-        const response = await fetch(`http://127.0.0.1:5555//users/${isLoggedIn.id}/missed`);
+        const response = await fetch(`http://tablevote.onrender.com//users/${isLoggedIn.id}/missed`);
         const data = await response.json();
         const restaurantIds = data;
         const restaurants = await Promise.all(restaurantIds.map(async (restaurantId) => {
-          const restaurantResponse = await fetch(`http://127.0.0.1:5555/yelpsearchbyid/${restaurantId}`);
+          const restaurantResponse = await fetch(`http://tablevote.onrender.com/yelpsearchbyid/${restaurantId}`);
           return restaurantResponse.json();
         }));
         setMissed(restaurants);
@@ -37,7 +37,7 @@ export default function Profile() {
 
 
   function handleLogout () {
-    fetch('http://127.0.0.1:5555/logout', {
+    fetch('http://tablevote.onrender.com/logout', {
           method: 'DELETE'})
           .then((r) => {
             if (r.ok) {

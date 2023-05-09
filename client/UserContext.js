@@ -6,7 +6,8 @@ const UserContext = React.createContext({
     loggedInParties: null,
     refresh: false,
     currentParty: null,
-    winnerWinner: null
+    winnerWinner: null,
+    missed: null
 });
 
 export default UserContext;

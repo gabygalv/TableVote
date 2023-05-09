@@ -2,7 +2,6 @@ import { View, Text, Image, TouchableOpacity, Linking, Button } from 'react-nati
 import React, { useContext } from 'react';
 import UserContext from '../UserContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import yelp_burst from '../assets/yelp_burst.png';
 
 const SelectWinner = ({party}) => {
   const { winnerWinner } = useContext(UserContext);
@@ -12,11 +11,11 @@ const SelectWinner = ({party}) => {
   const handlePress = () => {
     Linking.openURL(image_url);
   };
+ 
 
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-     
   <TouchableOpacity onPress={handlePress}>
     <Image
       source={{ uri: image_url }}

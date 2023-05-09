@@ -65,6 +65,16 @@ class Users(Resource):
     def get(self):
         users = [item.to_dict() for item in User.query.all()]
         return make_response(users, 200)
+
+class MissedConnections(Resource):
+    def get(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {'error': 'User not found'}, 404
+
+        party_votes = PartyVote.query.join(PartyUser).filter(PartyUser.user_id == id).all()
+        restaurant_ids = [pv.restaurant_id for pv in party_votes]
+        return make_response(restaurant_ids, 200)
     
 class UserParties(Resource):
     def get(self, user_id):
@@ -260,6 +270,7 @@ class YelpSearchById(Resource):
     
 api.add_resource(Home, '/')
 api.add_resource(Users, '/users')
+api.add_resource(MissedConnections, '/users/<int:id>/missed')
 api.add_resource(UserParties, '/users/<int:user_id>/parties')
 api.add_resource(Parties, '/parties')
 api.add_resource(PartiesById, '/parties/<int:id>')

@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { FlatList, Text } from 'react-native';
+import { FlatList, Text, StyleSheet } from 'react-native';
 import RestaurantCard from './restaurantCard';
 import UserContext from '../UserContext.js';
 import { useNavigation } from '@react-navigation/native';
@@ -20,9 +20,22 @@ const RestaurantList = () => {
           navigation={navigation}
         />
       )}
-      ListEmptyComponent={<Text>No Search Results Available</Text>}
+      ListEmptyComponent={<Text style={styles.headerText}>No Search Results Available</Text>}
     />
   );
 };
 
 export default RestaurantList;
+
+const styles = StyleSheet.create({
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    flex:1, 
+    marginTop:50, 
+    backgroundColor: '#FF9F1C',
+    justifyContent: 'space-around',
+    padding: 10
+  },
+});

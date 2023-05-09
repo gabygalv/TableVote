@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { FlatList, Text, View } from 'react-native';
 import PastCard from './pastcard';
+import UserContext from '../UserContext.js';
 
-const PastParties = ({ loggedInParties }) => {
-    console.log(loggedInParties)
+
+const PastParties = () => {
+    const { loggedInParties} = useContext(UserContext);
     const filteredParties = loggedInParties.filter(party => party.past_section);
 
   return (

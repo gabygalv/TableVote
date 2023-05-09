@@ -86,7 +86,7 @@ class PartyVote(db.Model, SerializerMixin):
     partyuser_id = db.Column(db.Integer, db.ForeignKey('party_users.id'))
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
     voted = db.Column(db.Boolean)
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.current_date())
 
     def ___repr__(self):
         return f'<PartyVote {self.id} * PartyUserId {self.partyuser_id} * RestaurantId {self.restaurant_id} * UpdatedAt {self.updated_at} >'

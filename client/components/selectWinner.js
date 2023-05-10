@@ -11,17 +11,16 @@ const SelectWinner = ({party}) => {
   const handlePress = () => {
     Linking.openURL(image_url);
   };
- 
 
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-  <TouchableOpacity onPress={handlePress}>
-    <Image
-      source={{ uri: image_url }}
-      style={{ width: 350, height: 350, borderColor: '#2EC4B6', borderWidth: 5 }}
-    />
-  </TouchableOpacity>
+    <TouchableOpacity onPress={handlePress}>
+      <Image
+        source={{ uri: image_url }}
+        style={{ width: 350, height: 350, borderColor: '#2EC4B6', borderWidth: 5 }}
+      />
+    </TouchableOpacity>
   {name && <Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>{name}</Text>}
   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
     {rating && [...Array(Math.floor(rating))].map((_, i) => (

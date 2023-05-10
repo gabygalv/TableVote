@@ -8,9 +8,9 @@ import TVLogo from '../assets/tvlogo.png'
 
 export default function AuthScreen () {
     const {isLoggedIn, setIsLoggedIn, setLoggedInParties, setRefresh} = useContext(UserContext);
-    const [login_email, setLoginEmail] = useState('');
+    const [login_phone, setLoginPhone] = useState('');
     const [login_password, setLoginPassword] = useState('');
-    const [signup_email, setSignupEmail] = useState('');
+    const [signup_phone, setSignupPhone] = useState('');
     const [signup_password, setSignupPassword] = useState('');
     const [signup_username, setSignupUsername] = useState('');
     const [signup, setSignup] = useState(false);
@@ -22,7 +22,7 @@ export default function AuthScreen () {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: login_email,
+          phone: login_phone,
           password: login_password,
         }),
       })
@@ -51,7 +51,7 @@ export default function AuthScreen () {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: signup_email,
+          phone: signup_phone,
           password: signup_password,
           username: signup_username,
         }),
@@ -85,10 +85,10 @@ export default function AuthScreen () {
                 borderWidth: 1, 
                 marginTop: 0,
                 borderRadius: 5 }}
-            placeholder="Email"
+            placeholder="Phone number"
             autoCapitalize="none"
-            onChangeText={(text) => setSignupEmail(text)}
-            value={signup_email}
+            onChangeText={(text) => setSignupPhone(text)}
+            value={signup_phone}
           />
           :
           <TextInput
@@ -98,10 +98,10 @@ export default function AuthScreen () {
                 borderWidth: 1, 
                 marginTop: 0,
                 borderRadius: 5 }}
-            placeholder="Email"
+            placeholder="Phone number"
             autoCapitalize="none"
-            onChangeText={(text) => setLoginEmail(text)}
-            value={login_email}
+            onChangeText={(text) => setLoginPhone(text)}
+            value={login_phone}
           />}
           {signup ? 
           <TextInput

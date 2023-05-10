@@ -7,7 +7,12 @@ import * as SMS from 'expo-sms';
 const SelectWinner = () => {
   const { winnerWinner, currentParty } = useContext(UserContext);
   const { name, rating, review_count, location, display_phone, image_url } = winnerWinner;
-  console.log(currentParty);
+
+  const partyUsers = currentParty.party_users
+  const phoneNumbers = partyUsers.map(partyUser => partyUser.user.phone)
+  console.log(phoneNumbers);
+
+
 
   const handlePress = () => {
     Linking.openURL(image_url);
@@ -16,7 +21,7 @@ const SelectWinner = () => {
   async function handleSMS() {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
-      const { result } = await SMS.sendSMSAsync(['6024595353'],
+      const { result } = await SMS.sendSMSAsync(phoneNumbers,
       `TableVote: The votes are in! We're going to ${name}`);
       if (result === 'cancelled') {
         console.log('user cancelled');

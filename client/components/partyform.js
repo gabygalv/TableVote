@@ -18,6 +18,8 @@ export default function PartyForm() {
   const [priceVal, setPriceVal] = useState('');
   const [openRadius, setOpenRadius] = useState(false);
   const [radiusVal, setRadiusVal] = useState('');
+  const [joining, setJoining] = useState(false);
+  const [partyCode, setPartyCode] = useState('');
 
   const handleInputChange = (fieldName, value) => {
     setSearchparty({ ...searchparty, [fieldName]: String(value) });
@@ -95,100 +97,155 @@ export default function PartyForm() {
       alert('Error saving party data to database:', err);
     }
   };
-    
+
+  function handleJoin () {
+    fetch('http://tablevote.onrender.com/partyusers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          party_id: partyCode,
+          usernames: [isLoggedIn.username]
+        })
+      });
+  
+      setRefresh(!refresh);
+      setPartyCode('')
+      alert('You\'ve been added to the party, head to the vote tab to start voting!');
+    } 
+
+    console.log(partyCode);
     
   return(
     <View style={{ flex:1, marginTop:50, justifyContent:'top', alignItems:'center' }} >
+    {joining ? 
+    <>
     <View style={styles.header}>
-  <Text style={styles.headerText}>Start a party, {isLoggedIn.username}!</Text>
-  </View>
-    <View style={styles.pickerContainer}>
-    <Text >Price Range:</Text>
-    <DropDownPicker
-          transparent={false}
-          zIndex={2000}
-          zIndexInverse={1000}
-          open={openPrice}
-          setOpen={setOpenPrice}
-          value={priceVal}
-          setValue={setPriceVal}
+    <Text style={styles.headerText}>Join a party, {isLoggedIn.username}!</Text>
+    </View>
+    <View style={styles.inputContainer}>
+      <Text >Party code:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="enter your party code"
+        autoCapitalize="none"
+        onChangeText={(text) => setPartyCode(text)}
+        value={partyCode}
+      />
+    </View> 
+    <TouchableOpacity onPress={handleJoin} style={{ 
+      backgroundColor: '#2EC4B6', 
+      padding: 10, 
+      marginTop: 20,
+      borderRadius: 5  }}>
+      <Text style={{ color: 'white' }}>Join</Text>
+      </TouchableOpacity>
+      <View style={styles.bannerContainer}>
+      <TouchableOpacity onPress={() => setJoining(!joining)}> 
+        <Text style={styles.bannerText}>Create a party instead?</Text>
+      </TouchableOpacity> 
+    </View>
+    </>
+    :
+    <>
+    <View style={styles.header}>
+    <Text style={styles.headerText}>Start a party, {isLoggedIn.username}!</Text>
+    </View>
+      <View style={styles.pickerContainer}>
+      <Text >Price Range:</Text>
+      <DropDownPicker
+            transparent={false}
+            zIndex={2000}
+            zIndexInverse={1000}
+            open={openPrice}
+            setOpen={setOpenPrice}
+            value={priceVal}
+            setValue={setPriceVal}
+            items={[
+              { label: '$', value: '1' },
+              { label: '$$', value: '2' },
+              { label: '$$$', value: '3' },
+              { label: '$$$$', value: '4' },
+            ]}
+            textStyle={styles.pickerText}
+            arrowStyle={styles.arrow}
+          
+          />
+    </View>
+    <View style={styles.inputContainer}>
+      <Text >Location:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="neighborhood, city, state, or zip"
+        autoCapitalize="none"
+        onChangeText={(text) => handleInputChange('location', text)}
+        value={searchparty.location}
+      />
+    </View>
+
+    
+    <View style={styles.inputContainer}>
+      <Text >Search Term:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="tacos, hawaiian, bars, etc"
+        autoCapitalize="none"
+        onChangeText={(text) => handleInputChange('term', text)}
+        value={searchparty.term}
+        />
+        </View>
+    
+    <View style={styles.inputContainer}>
+    <Text >Usernames:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="enter usernames separated by a comma"
+        autoCapitalize="none"
+        onChangeText={(text) => handleUsernamesChange(text)}
+        value={usernames}
+      />
+    </View>
+
+      <View style={styles.pickerContainer}>
+        <Text > Search Radius:</Text>
+        <View >
+        <DropDownPicker
+        zIndex={2000}
+        zIndexInverse={2000}
+          open={openRadius}
+          setOpen={setOpenRadius}
+          value={radiusVal}
+          setValue={setRadiusVal}
           items={[
-            { label: '$', value: '1' },
-            { label: '$$', value: '2' },
-            { label: '$$$', value: '3' },
-            { label: '$$$$', value: '4' },
+            { label: '5 miles', value: '8045' },
+            { label: '10 miles', value: '16090' },
+            { label: '15 miles', value: '24135' },
+            { label: '25 miles', value: '40000' },
           ]}
           textStyle={styles.pickerText}
           arrowStyle={styles.arrow}
-        
-        />
-  </View>
-  <View style={styles.inputContainer}>
-    <Text >Location:</Text>
-    <TextInput
-      style={styles.input}
-      placeholder="neighborhood, city, state, or zip"
-      autoCapitalize="none"
-      onChangeText={(text) => handleInputChange('location', text)}
-      value={searchparty.location}
-    />
-  </View>
-
-  
-  <View style={styles.inputContainer}>
-    <Text >Search Term:</Text>
-    <TextInput
-      style={styles.input}
-      placeholder="tacos, hawaiian, bars, etc"
-      autoCapitalize="none"
-      onChangeText={(text) => handleInputChange('term', text)}
-      value={searchparty.term}
-      />
+          
+          
+          />
+        </View>
       </View>
-  
-  <View style={styles.inputContainer}>
-  <Text >Usernames:</Text>
-    <TextInput
-      style={styles.input}
-      placeholder="enter usernames separated by a comma"
-      autoCapitalize="none"
-      onChangeText={(text) => handleUsernamesChange(text)}
-      value={usernames}
-    />
-  </View>
 
-    <View style={styles.pickerContainer}>
-      <Text > Search Radius:</Text>
-      <View >
-      <DropDownPicker
-       zIndex={2000}
-       zIndexInverse={2000}
-        open={openRadius}
-        setOpen={setOpenRadius}
-        value={radiusVal}
-        setValue={setRadiusVal}
-        items={[
-          { label: '5 miles', value: '8045' },
-          { label: '10 miles', value: '16090' },
-          { label: '15 miles', value: '24135' },
-          { label: '25 miles', value: '40000' },
-        ]}
-        textStyle={styles.pickerText}
-        arrowStyle={styles.arrow}
-        
-        
-        />
-      </View>
+      <TouchableOpacity onPress={handleSubmit} style={{ 
+      backgroundColor: '#2EC4B6', 
+      padding: 10, 
+      marginTop: 20,
+      borderRadius: 5  }}>
+      <Text style={{ color: 'white' }}>Submit</Text>
+      </TouchableOpacity>
+      <View style={styles.bannerContainer}>
+      <TouchableOpacity onPress={() => setJoining(!joining)}> 
+        <Text style={styles.bannerText}>Joining an existing party?</Text>
+      </TouchableOpacity> 
     </View>
-
-    <TouchableOpacity onPress={handleSubmit} style={{ 
-    backgroundColor: '#2EC4B6', 
-    padding: 10, 
-    marginTop: 20,
-    borderRadius: '5px'  }}>
-    <Text style={{ color: 'white' }}>Submit</Text>
-    </TouchableOpacity>
-</View>
+      </>
+      }
+  </View>
   )}
 
 const styles = StyleSheet.create({
@@ -213,11 +270,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 20,
-    backgroundColor: '#2EC4B6',
+    backgroundColor: '#FF9F1C',
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'white',
+  },
+  bannerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    backgroundColor: '#2EC4B6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bannerText: {
+    fontWeight: 'bold',
+    fontSize: 16,
     color: 'white',
   },
 });

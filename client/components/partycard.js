@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator, But
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import UserContext from '../UserContext.js';
 import SelectWinner from './selectWinner.js';
+import * as SMS from 'expo-sms';
 
 
 export default function PartyCard({ party, navigation, onDelete, onArchive }) {
@@ -17,7 +18,23 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
     day: '2-digit',
     year: '2-digit'
   });
-  
+  console.log(party.id)
+  async function handleSMS() {
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      const { result } = await SMS.sendSMSAsync([],
+      `Join our TableVote using code ${party.id}.\n\n Don't have the app? Download it here (somelink.com) and create an account to join!`);
+      if (result === 'cancelled') {
+        console.log('user cancelled');
+      } else if (result === 'sent') {
+        console.log('success, sms sent or scheduled')
+      } else {
+        console.log('error, status of the message is unknown')
+      }
+    } else {
+      console.log('error, sms not available')
+    }
+  }
 
   const handlePress = () => {  
     setIsLoading(true);
@@ -87,6 +104,7 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       console.error(error);
     } finally {
       setIsLoading(false);
+      setRefresh(!refresh)
     }
   }
   return (
@@ -141,6 +159,10 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
               <TouchableOpacity style={styles.option} onPress={onDelete}>
                 <Text>Delete Party</Text>
               </TouchableOpacity>
+              {party.selected_restaurant_id ? null : 
+              <TouchableOpacity style={styles.option} onPress={handleSMS}>
+                <Text>Invite Users</Text>
+              </TouchableOpacity>}
             </View>
           )}
 

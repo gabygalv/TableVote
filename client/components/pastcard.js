@@ -115,9 +115,15 @@ export default function PastCard({ party }) {
                   </View>
                   {winnerWinner.location?.display_address?.length > 0 && <Text style={{ fontSize: 16, marginTop: 10 }}>{winnerWinner.location.display_address.join(', ')}</Text>}
                   {winnerWinner.display_phone && <Text style={{ fontSize: 16, marginTop: 10 }}>{winnerWinner.display_phone}</Text>}
-                  {winnerWinner.url && <Button title={'View on Yelp'} style={{ fontSize: 16, marginTop: 10 }} onPress={() => {
+                  {winnerWinner.url && <TouchableOpacity onPress={() => {
                     Linking.openURL(winnerWinner.url);
-                  }} />}
+                  }} style={{ 
+                    backgroundColor: '#FF9F1C', 
+                    padding: 10, 
+                    marginTop: 20,
+                    borderRadius: '5px'  }}>
+                    <Text style={{ color: 'white' }}>View on Yelp</Text>
+                  </TouchableOpacity>}
                 </View>
             <TouchableOpacity
               onPress={() => setModalVisible(!modalVisible)}

@@ -58,13 +58,18 @@ const SelectWinner = () => {
   </View>
   {location?.display_address?.length > 0 && <Text style={{ fontSize: 16, marginTop: 10 }}>{location.display_address.join(', ')}</Text>}
   {display_phone && <Text style={{ fontSize: 16, marginTop: 10 }}>{display_phone}</Text>}
+  <View style={styles.row}>
   {winnerWinner.url && 
-  <Button title={'View on Yelp'} style={{ fontSize: 16, marginTop: 10 }} onPress={() => {
-    Linking.openURL(winnerWinner.url);
-  }} />}
+    <TouchableOpacity onPress={() => {
+      Linking.openURL(winnerWinner.url);
+    }} style={[styles.button, styles.marginRight]}>
+      <Text style={styles.buttonText}>View on Yelp</Text>
+    </TouchableOpacity>
+  }
   <TouchableOpacity onPress={handleSMS} style={styles.button}>
-    <Text style={styles.buttonText}>Notify Party?</Text>
+    <Text style={styles.buttonText}>Notify party</Text>
   </TouchableOpacity>
+</View>
 </View>
   );
 };
@@ -72,13 +77,21 @@ const SelectWinner = () => {
 export default SelectWinner;
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
   button: {
     backgroundColor: '#2EC4B6',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 10,
+    marginRight: 10
   },
+ 
   buttonText: {
     color: 'white',
     fontSize: 16,

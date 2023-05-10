@@ -1,7 +1,8 @@
-import { View, Text, Image, TouchableOpacity, Linking, Button } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Linking, Button, StyleSheet } from 'react-native';
 import React, { useContext } from 'react';
 import UserContext from '../UserContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as SMS from 'expo-sms';
 
 const SelectWinner = ({party}) => {
   const { winnerWinner } = useContext(UserContext);
@@ -11,6 +12,23 @@ const SelectWinner = ({party}) => {
   const handlePress = () => {
     Linking.openURL(image_url);
   };
+
+  async function handleSMS() {
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      const { result } = await SMS.sendSMSAsync(['6024595353'],
+      `TableVote: The votes are in! We're going to ${name}, check it out here: ${winnerWinner.url}`);
+      if (result === 'cancelled') {
+        console.log('user cancelled');
+      } else if (result === 'sent') {
+        console.log('success, sms sent or scheduled')
+      } else {
+        console.log('error, status of the message is unknown')
+      }
+    } else {
+      console.log('error, sms not available')
+    }
+  }
  
 
 
@@ -26,10 +44,10 @@ const SelectWinner = ({party}) => {
   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
     {rating && [...Array(Math.floor(rating))].map((_, i) => (
       <Ionicons key={i} name='star' color={'#2EC4B6'} size={20} />
-    ))}
+      ))}
     {rating % 1 !== 0 && (
       <Ionicons name='star-half' color={'#2EC4B6'} size={20} />
-    )}
+      )}
     {rating && <Text style={{ fontSize: 20, marginLeft: 5 }}>{rating}</Text>}
     {review_count && <Text style={{ fontSize: 16, marginLeft: 10 }}>Reviews: ({review_count})</Text>}
   </View>
@@ -39,8 +57,25 @@ const SelectWinner = ({party}) => {
   <Button title={'View on Yelp'} style={{ fontSize: 16, marginTop: 10 }} onPress={() => {
     Linking.openURL(winnerWinner.url);
   }} />}
+  <TouchableOpacity onPress={handleSMS} style={styles.button}>
+    <Text style={styles.buttonText}>Notify Party?</Text>
+  </TouchableOpacity>
 </View>
   );
 };
 
 export default SelectWinner;
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#2EC4B6',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+});

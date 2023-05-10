@@ -4,10 +4,10 @@ import UserContext from '../UserContext.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as SMS from 'expo-sms';
 
-const SelectWinner = ({party}) => {
-  const { winnerWinner } = useContext(UserContext);
+const SelectWinner = () => {
+  const { winnerWinner, currentParty } = useContext(UserContext);
   const { name, rating, review_count, location, display_phone, image_url } = winnerWinner;
-  console.log(party)
+  console.log(currentParty);
 
   const handlePress = () => {
     Linking.openURL(image_url);
@@ -17,7 +17,7 @@ const SelectWinner = ({party}) => {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
       const { result } = await SMS.sendSMSAsync(['6024595353'],
-      `TableVote: The votes are in! We're going to ${name}, check it out here: ${winnerWinner.url}`);
+      `TableVote: The votes are in! We're going to ${name}`);
       if (result === 'cancelled') {
         console.log('user cancelled');
       } else if (result === 'sent') {

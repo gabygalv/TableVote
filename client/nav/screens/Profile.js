@@ -9,12 +9,13 @@ import MissedConnections from '../../components/missed.js';
 
 
 export default function Profile() {
-  const {isLoggedIn, setIsLoggedIn, loggedInParties, setMissed, missed} = useContext(UserContext);
+  const {isLoggedIn, setIsLoggedIn, loggedInParties, setMissed, missed, setWinnerWinner } = useContext(UserContext);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
   const [missedCollapsed, setMissedCollapsed] = useState(true);
+
   const handleMissed = async () => {
     if (missed === null) {
       try {
@@ -34,7 +35,7 @@ export default function Profile() {
       setMissedCollapsed(!missedCollapsed);
     }
   };
-
+console.log(isLoggedIn);
 
   function handleLogout () {
     fetch('http://tablevote.onrender.com/logout', {
@@ -42,6 +43,8 @@ export default function Profile() {
           .then((r) => {
             if (r.ok) {
               setIsLoggedIn(null)
+              setMissed(null)
+              setWinnerWinner(null)
             }
           })
   }

@@ -6,7 +6,7 @@ import SelectWinner from './selectWinner.js';
 
 
 export default function PartyCard({ party, navigation, onDelete, onArchive }) {
-  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData, refresh, setRefresh, isLoggedIn} = useContext(UserContext);
+  const {setYelpData, setCurrentParty, setWinnerWinner, yelpData, refresh, setRefresh, isLoggedIn, currentParty} = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
@@ -54,6 +54,7 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
   async function handleSelectRestaurant() {
     try {
       setIsLoading(true);
+      setCurrentParty(party)
   
       const response = await fetch(`http://tablevote.onrender.com/parties/${party.id}`);
       const data = await response.json();
@@ -81,7 +82,7 @@ export default function PartyCard({ party, navigation, onDelete, onArchive }) {
       });
       await patchResponse.json();
   
-      navigation.navigate('SelectWinner');
+      navigation.navigate('SelectWinner',{ party: currentParty });
     } catch (error) {
       console.error(error);
     } finally {

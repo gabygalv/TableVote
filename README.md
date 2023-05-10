@@ -59,6 +59,7 @@ TableVote was created by Gabriela Galvan as part of the Flatiron School Full-Sta
 
 ### View winner
 <img src="https://github.com/gabygalv/TableVote/assets/121903203/262d94c2-6edd-4142-832a-ffe2fd46a115?raw=true&sanitize=true" width="500" height="auto"/>
+![view winner](https://github.com/gabygalv/TableVote/assets/121903203/33aaa384-9c41-4e40-8357-7cfbc8dd0dcf)
 
 
 ### Profile Tab

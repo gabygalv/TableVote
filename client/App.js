@@ -4,9 +4,10 @@ import { createAppContainer } from 'react-navigation';
 import NavContainer from './nav/navContainer.js';
 import AuthScreen from './login/authScreen.js';
 import UserContext from './UserContext.js';
-
+import { LogBox, StatusBar } from 'react-native';
 
 export default function App() {
+  LogBox.ignoreAllLogs()  
   const [isLoggedIn, setIsLoggedIn] = useState(null); 
   const [yelpData, setYelpData] = useState(null); 
   const [loggedInParties, setLoggedInParties] = useState(null); 
@@ -49,6 +50,8 @@ export default function App() {
     missed, 
     setMissed }}>
     {isLoggedIn? <NavContainer isLoggedIn={isLoggedIn}/> : <AuthScreen/>}
+    <StatusBar barStyle = "dark-content" hidden = {false} translucent = {true}/>
+
   </UserContext.Provider>
   );
 }

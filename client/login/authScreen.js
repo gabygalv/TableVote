@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, StatusBar } from 'react-native';
 import UserContext from '../UserContext';
-import { Formik } from 'formik';
 
 
 import TVLogo from '../assets/tvlogo.png'
@@ -75,6 +74,10 @@ export default function AuthScreen () {
     
 
     return (
+      <KeyboardAvoidingView
+      style={{ flex: 1 }}    
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+    >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Image source={TVLogo} style={{ height: '20%', width: '85%', resizeMode: 'contain' }} />
           {signup?
@@ -177,5 +180,7 @@ export default function AuthScreen () {
            <Text>Don't have an account? Sign up here.</Text>}
           </TouchableOpacity>
         </View>
+        <StatusBar barStyle = "dark-content" hidden = {false} translucent = {true}/>
+        </KeyboardAvoidingView>
       );
     }
